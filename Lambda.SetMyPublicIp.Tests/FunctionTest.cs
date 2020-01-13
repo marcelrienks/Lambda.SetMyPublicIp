@@ -15,6 +15,12 @@ namespace Lambda.SetMyPublicIp.Tests
 {
     public class FunctionTest
     {
+        public FunctionTest()
+        {
+            // Initialise the Function class by passing in a Mock RouteHandler
+            Function.Initialise(new MockRouteHandler());
+        }
+
         [Fact]
         public void ArgumentNullExceptionForRequest()
         {
@@ -22,7 +28,7 @@ namespace Lambda.SetMyPublicIp.Tests
             APIGatewayProxyRequest apiGatewayProxyRequest = null;
 
             // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
 
             // Assert
             Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
@@ -37,7 +43,7 @@ namespace Lambda.SetMyPublicIp.Tests
             apiGatewayProxyRequest.HttpMethod = "POST";
 
             // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
 
             // Assert
             Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
@@ -52,7 +58,24 @@ namespace Lambda.SetMyPublicIp.Tests
             apiGatewayProxyRequest.HttpMethod = "PATCH";
 
             // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
+
+            // Assert
+            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
+            Assert.Contains("No hostedZoneId query string present.", apiGatewayProxyResponse.Body);
+        }
+
+        [Fact]
+        public void ArgumentNullExceptionForDomainHostedZoneId()
+        {
+            // Arrange
+            var apiGatewayProxyRequest = new APIGatewayProxyRequest();
+            apiGatewayProxyRequest.HttpMethod = "PATCH";
+            apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
+
+            // Act
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
 
             // Assert
             Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
@@ -66,10 +89,11 @@ namespace Lambda.SetMyPublicIp.Tests
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
             apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
             apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
 
             // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
 
             // Assert
             Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
@@ -83,12 +107,13 @@ namespace Lambda.SetMyPublicIp.Tests
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
             apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
             apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
             apiGatewayProxyRequest.Headers = new Dictionary<string, string>();
             apiGatewayProxyRequest.Headers.Add("key", "value");
 
             // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
 
             // Assert
             Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
@@ -102,16 +127,17 @@ namespace Lambda.SetMyPublicIp.Tests
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
             apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
             apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
             apiGatewayProxyRequest.Headers = new Dictionary<string, string>();
             apiGatewayProxyRequest.Headers.Add("X-Forwarded-For", "127.0.0.1, 127.0.0.2");
 
             // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
 
             // Assert
             Assert.Equal(200, apiGatewayProxyResponse.StatusCode);
-            Assert.Equal("{\"domain\":\"test.com\",\"publicIp\":\"127.0.0.1, 127.0.0.2\"}", apiGatewayProxyResponse.Body);
+            Assert.Equal("{\"status\":\"OK\",\"domain\":\"test.com\",\"publicIp\":\"127.0.0.1, 127.0.0.2\"}", apiGatewayProxyResponse.Body);
         }
     }
 }

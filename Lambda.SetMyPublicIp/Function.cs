@@ -1,6 +1,7 @@
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.Json;
+using Amazon.Route53;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +10,12 @@ namespace Lambda.SetMyPublicIp
 {
     public class Function
     {
-        private static string _prefix = " - SetMyPublicIp:";
+        private static IRouteHandler _routeHandler;
+
+        public static void Initialise(IRouteHandler routeHandler)
+        {
+            _routeHandler = routeHandler;
+        }
 
         /// <summary>
         /// The main entry point for the custom runtime.
@@ -17,7 +23,9 @@ namespace Lambda.SetMyPublicIp
         /// <param name="args"></param>
         private static async Task Main(string[] args)
         {
-            Func<APIGatewayProxyRequest, APIGatewayProxyResponse> func = SetMyPublicIp;
+            _routeHandler = new RouteHandler(new AmazonRoute53Client());
+
+            Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>> func = SetMyPublicIp;
             using (var handlerWrapper = HandlerWrapper.GetHandlerWrapper(func, new JsonSerializer()))
             using (var bootstrap = new LambdaBootstrap(handlerWrapper)) { await bootstrap.RunAsync(); }
         }
@@ -28,19 +36,21 @@ namespace Lambda.SetMyPublicIp
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns>an <c>APIGatewayProxyResponse</c> indicating if the function call was successfull</returns>
-        public static APIGatewayProxyResponse SetMyPublicIp(APIGatewayProxyRequest apiGatewayProxyRequest)
+        public async static Task<APIGatewayProxyResponse> SetMyPublicIp(APIGatewayProxyRequest apiGatewayProxyRequest)
         {
             try
             {
                 Helpers.Log("Entrypoint");
 
                 // Validate and get the arguments from request
-                var (domain, publicIp) = Helpers.ValidateRequest(apiGatewayProxyRequest);
+                var (hostedZoneId, domain, publicIp) = Helpers.ValidateRequest(apiGatewayProxyRequest);
 
-                //TODO: Complete the logic here that will update the Public IP of the Route 53 domain
+                // Update the recorset with the public IP
+                var status = await _routeHandler.UpsertRecordset(hostedZoneId, domain, publicIp);
 
                 // Create return body
                 var body = new Dictionary<string, string>();
+                body.Add("status", status);
                 body.Add("domain", domain);
                 body.Add("publicIp", publicIp);
 

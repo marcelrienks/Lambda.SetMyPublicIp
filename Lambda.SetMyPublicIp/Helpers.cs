@@ -31,7 +31,7 @@ namespace Lambda.SetMyPublicIp
         /// </summary>
         /// <param name="apiGatewayProxyRequest">the request from the API Gateway proxy</param>
         /// <returns></returns>
-        public static (string domain, string publicIp) ValidateRequest(APIGatewayProxyRequest apiGatewayProxyRequest)
+        public static (string hostedZoneId, string domain, string publicIp) ValidateRequest(APIGatewayProxyRequest apiGatewayProxyRequest)
         {
             Log("ValidateRequest");
 
@@ -40,6 +40,11 @@ namespace Lambda.SetMyPublicIp
 
             if (apiGatewayProxyRequest.HttpMethod != "PATCH")
                 throw new ArgumentException($"Invalid HttpMethod {apiGatewayProxyRequest.HttpMethod}.", "apiGatewayProxyRequest.HttpMethod");
+
+            if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("hostedZoneId", out string hostedZoneId))
+                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No hostedZoneId query string present.");
+
+            Log($"hostedZoneId: {hostedZoneId}");
 
             if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("domain", out string domain))
                 throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No domain query string present.");
@@ -54,7 +59,7 @@ namespace Lambda.SetMyPublicIp
 
             Log($"publicIp: {publicIp}");
 
-            return (domain, publicIp);
+            return (hostedZoneId, domain, publicIp);
         }
 
         /// <summary>
