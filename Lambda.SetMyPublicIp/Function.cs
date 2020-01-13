@@ -3,7 +3,6 @@ using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lambda.SetMyPublicIp
@@ -33,22 +32,22 @@ namespace Lambda.SetMyPublicIp
         {
             try
             {
-                Console.WriteLine($"{_prefix} Entrypoint");
+                Helpers.Log("Entrypoint");
 
                 // Validate and get the arguments from request
-                var argumentsTuple = Helpers.ValidateRequest(apiGatewayProxyRequest);
+                var (domain, publicIp) = Helpers.ValidateRequest(apiGatewayProxyRequest);
 
                 //TODO: Complete the logic here that will update the Public IP of the Route 53 domain
 
                 // Create return body
                 var body = new Dictionary<string, string>();
-                body.Add("domain", argumentsTuple.domain);
-                body.Add("publicIp", argumentsTuple.publicIp);
+                body.Add("domain", domain);
+                body.Add("publicIp", publicIp);
 
                 var serializedBody = System.Text.Json.JsonSerializer.Serialize(body);
 
                 // Return
-                Console.WriteLine($"{_prefix} Return 200, with body: {serializedBody}");
+                Helpers.Log($"Return 200, with body: {serializedBody}");
                 return new APIGatewayProxyResponse
                 {
                     StatusCode = 200,
@@ -57,17 +56,17 @@ namespace Lambda.SetMyPublicIp
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine($"{_prefix} ArgumentNullException: {ex.Message}");
+                Helpers.Log($"ArgumentNullException: {ex.Message}");
                 return new APIGatewayProxyResponse { StatusCode = 400, Body = Helpers.SerializeException(ex) };
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine($"{_prefix} ArgumentException: {ex.Message}");
+                Helpers.Log($"ArgumentException: {ex.Message}");
                 return new APIGatewayProxyResponse { StatusCode = 400, Body = Helpers.SerializeException(ex) };
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{_prefix} Exception: {ex.Message}");
+                Helpers.Log($"Exception: {ex.Message}");
                 return new APIGatewayProxyResponse { StatusCode = 500, Body = Helpers.SerializeException(ex) };
             }
         }

@@ -1,6 +1,7 @@
 ﻿using Amazon.Lambda.APIGatewayEvents;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lambda.SetMyPublicIp
 {
@@ -32,7 +33,7 @@ namespace Lambda.SetMyPublicIp
         /// <returns></returns>
         public static (string domain, string publicIp) ValidateRequest(APIGatewayProxyRequest apiGatewayProxyRequest)
         {
-            Console.WriteLine($"{_prefix} ValidateRequest");
+            Log("ValidateRequest");
 
             if (apiGatewayProxyRequest == null)
                 throw new ArgumentNullException(nameof(apiGatewayProxyRequest), "The argument cannot be null.");
@@ -43,7 +44,7 @@ namespace Lambda.SetMyPublicIp
             if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("domain", out string domain))
                 throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No domain query string present.");
 
-            Console.WriteLine($"{_prefix} domain: {domain}");
+            Log($"domain: {domain}");
 
             if (apiGatewayProxyRequest.Headers == null || !apiGatewayProxyRequest.Headers.Any())
                 throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No request headers present.");
@@ -51,9 +52,18 @@ namespace Lambda.SetMyPublicIp
             if (!apiGatewayProxyRequest.Headers.TryGetValue("X-Forwarded-For", out string publicIp))
                 throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No X-Forwarded-For header present.");
 
-            Console.WriteLine($"{_prefix} publicIp: {publicIp}");
+            Log($"publicIp: {publicIp}");
 
             return (domain, publicIp);
+        }
+
+        /// <summary>
+        /// Adds a prefix to the message and logs it
+        /// </summary>
+        /// <param name="message">the Message to be logged</param>
+        public static void Log(string message)
+        {
+            Console.WriteLine($" - SetMyPublicIp: {message}");
         }
     }
 }
