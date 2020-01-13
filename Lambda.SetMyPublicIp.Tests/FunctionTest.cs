@@ -1,15 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Xunit;
-using Amazon.Lambda.Core;
-using Amazon.Lambda.TestUtilities;
-
-using Lambda.SetMyPublicIp;
 using Amazon.Lambda.APIGatewayEvents;
-using System.Net.Http;
+using Lambda.SetMyPublicIp.Tests.Mocks;
+using System;
+using System.Threading.Tasks;
 
 namespace Lambda.SetMyPublicIp.Tests
 {
@@ -18,55 +12,46 @@ namespace Lambda.SetMyPublicIp.Tests
         public FunctionTest()
         {
             // Initialise the Function class by passing in a Mock RouteHandler
-            Function.Initialise(new MockRouteHandler());
+            Function.Initialise(new MockedRouteHandler());
         }
 
         [Fact]
-        public void ArgumentNullExceptionForRequest()
+        public async Task ArgumentNullExceptionForRequest()
         {
             // Arrange
             APIGatewayProxyRequest apiGatewayProxyRequest = null;
 
-            // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
-
-            // Assert
-            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
-            Assert.Contains("The argument cannot be null.", apiGatewayProxyResponse.Body);
+            // Act & assert
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
+            Assert.Contains("The argument cannot be null. (Parameter 'apiGatewayProxyRequest')", exception.Message);
         }
 
         [Fact]
-        public void ArgumentExceptionForHttpMethod()
+        public async Task ArgumentExceptionForHttpMethod()
         {
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "POST";
 
-            // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
-
-            // Assert
-            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
-            Assert.Contains("Invalid HttpMethod POST.", apiGatewayProxyResponse.Body);
+            // Act & assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>("apiGatewayProxyRequest.HttpMethod", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
+            Assert.Contains("Invalid HttpMethod POST. (Parameter 'apiGatewayProxyRequest.HttpMethod')", exception.Message);
         }
 
         [Fact]
-        public void ArgumentNullExceptionForDomain()
+        public async Task ArgumentNullExceptionForDomain()
         {
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
 
-            // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
-
-            // Assert
-            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
-            Assert.Contains("No hostedZoneId query string present.", apiGatewayProxyResponse.Body);
+            // Act & assert
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest.QueryStringParameters", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
+            Assert.Contains("No hostedZoneId query string present. (Parameter 'apiGatewayProxyRequest.QueryStringParameters')", exception.Message);
         }
 
         [Fact]
-        public void ArgumentNullExceptionForDomainHostedZoneId()
+        public async Task ArgumentNullExceptionForHostedZoneId()
         {
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
@@ -74,16 +59,13 @@ namespace Lambda.SetMyPublicIp.Tests
             apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
             apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
 
-            // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
-
-            // Assert
-            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
-            Assert.Contains("No domain query string present.", apiGatewayProxyResponse.Body);
+            // Act & assert
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest.QueryStringParameters", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
+            Assert.Contains("No domain query string present. (Parameter 'apiGatewayProxyRequest.QueryStringParameters')", exception.Message);
         }
 
         [Fact]
-        public void ArgumentNullExceptionForHeaders()
+        public async Task ArgumentNullExceptionForHeaders()
         {
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
@@ -92,16 +74,13 @@ namespace Lambda.SetMyPublicIp.Tests
             apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
             apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
 
-            // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
-
-            // Assert
-            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
-            Assert.Contains("No request headers present.", apiGatewayProxyResponse.Body);
+            // Act & assert
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest.Headers", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
+            Assert.Contains("No request headers present. (Parameter 'apiGatewayProxyRequest.Headers')", exception.Message);
         }
 
         [Fact]
-        public void ArgumentNullExceptionForXForward()
+        public async Task ArgumentNullExceptionForXForward()
         {
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
@@ -112,12 +91,9 @@ namespace Lambda.SetMyPublicIp.Tests
             apiGatewayProxyRequest.Headers = new Dictionary<string, string>();
             apiGatewayProxyRequest.Headers.Add("key", "value");
 
-            // Act
-            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest).Result;
-
-            // Assert
-            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
-            Assert.Contains("No X-Forwarded-For header present.", apiGatewayProxyResponse.Body);
+            // Act & assert
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest.Headers", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
+            Assert.Contains("No X-Forwarded-For header present. (Parameter 'apiGatewayProxyRequest.Headers')", exception.Message);
         }
 
         [Fact]
@@ -137,7 +113,7 @@ namespace Lambda.SetMyPublicIp.Tests
 
             // Assert
             Assert.Equal(200, apiGatewayProxyResponse.StatusCode);
-            Assert.Equal("{\"status\":\"OK\",\"domain\":\"test.com\",\"publicIp\":\"127.0.0.1, 127.0.0.2\"}", apiGatewayProxyResponse.Body);
+            Assert.Equal("{\"status\":\"OK\",\"domain\":\"test.com\",\"publicIp\":\"127.0.0.1\"}", apiGatewayProxyResponse.Body);
         }
     }
 }

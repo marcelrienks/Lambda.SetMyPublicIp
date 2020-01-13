@@ -68,20 +68,10 @@ namespace Lambda.SetMyPublicIp
                     Body = serializedBody
                 };
             }
-            catch (ArgumentNullException ex)
-            {
-                Logging.Log($"ArgumentNullException: {ex.Message}");
-                return new APIGatewayProxyResponse { StatusCode = 400, Body = General.SerializeException(ex) };
-            }
-            catch (ArgumentException ex)
-            {
-                Logging.Log($"ArgumentException: {ex.Message}");
-                return new APIGatewayProxyResponse { StatusCode = 400, Body = General.SerializeException(ex) };
-            }
             catch (Exception ex)
             {
-                Logging.Log($"Exception: {ex.Message}");
-                return new APIGatewayProxyResponse { StatusCode = 500, Body = General.SerializeException(ex) };
+                Logging.Log($"{typeof(Exception)}: {ex.Message}");
+                throw;
             }
         }
 
@@ -94,27 +84,36 @@ namespace Lambda.SetMyPublicIp
         {
             Logging.Log("ValidateRequest");
 
+            // Validate that request is not null
             if (apiGatewayProxyRequest == null)
                 throw new ArgumentNullException(nameof(apiGatewayProxyRequest), "The argument cannot be null.");
 
+            // Validate that the correct Http Method is used
             if (apiGatewayProxyRequest.HttpMethod != "PATCH")
                 throw new ArgumentException($"Invalid HttpMethod {apiGatewayProxyRequest.HttpMethod}.", "apiGatewayProxyRequest.HttpMethod");
 
+            // Validate and get query param 'hostedZoneId' is present
             if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("hostedZoneId", out string hostedZoneId))
                 throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No hostedZoneId query string present.");
 
             Logging.Log($"hostedZoneId: {hostedZoneId}");
 
+            // Validate and get query param 'domain' is present
             if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("domain", out string domain))
                 throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No domain query string present.");
 
             Logging.Log($"domain: {domain}");
 
+            // Validate that headders are present
             if (apiGatewayProxyRequest.Headers == null || !apiGatewayProxyRequest.Headers.Any())
                 throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No request headers present.");
 
+            // Validate and get header 'X-Forwarded-For' is present
             if (!apiGatewayProxyRequest.Headers.TryGetValue("X-Forwarded-For", out string publicIp))
                 throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No X-Forwarded-For header present.");
+
+            // Ensure only first IP is taken, incase there are multiple
+            publicIp = publicIp.Split(',').FirstOrDefault();
 
             Logging.Log($"publicIp: {publicIp}");
 

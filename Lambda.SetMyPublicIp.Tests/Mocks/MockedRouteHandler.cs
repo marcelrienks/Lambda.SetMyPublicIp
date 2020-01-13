@@ -2,9 +2,9 @@
 using Lambda.SetMyPublicIp.Interfaces;
 using System.Threading.Tasks;
 
-namespace Lambda.SetMyPublicIp.Tests
+namespace Lambda.SetMyPublicIp.Tests.Mocks
 {
-    public class MockRouteHandler : IRouteHandler
+    public class MockedRouteHandler : IRouteHandler
     {
         public Task<ChangeStatus> UpsertRecordset(string hostedZoneId, string domain, string ipAddress)
         {
