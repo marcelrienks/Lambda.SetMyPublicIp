@@ -31,69 +31,45 @@ namespace Lambda.SetMyPublicIp
         /// <returns>an <c>APIGatewayProxyResponse</c> indicating if the function call was successfull</returns>
         public static APIGatewayProxyResponse SetMyPublicIp(APIGatewayProxyRequest apiGatewayProxyRequest)
         {
-            Console.WriteLine($"{_prefix} Entrypoint");
-
-            if (ValidateRequest(apiGatewayProxyRequest))
+            try
             {
-                var domain = apiGatewayProxyRequest.QueryStringParameters.Single(item => item.Key == "domain").Value;
-                Console.WriteLine($"{_prefix} domain: {domain}");
+                Console.WriteLine($"{_prefix} Entrypoint");
 
-                var publicIp = apiGatewayProxyRequest.Headers.Single(item => item.Key == "X-Forwarded-For").Value;
-                Console.WriteLine($"{_prefix} publicIp: {publicIp}");
-
-                var body = new Dictionary<string, string>();
-                body.Add("domain", domain);
-                body.Add("publicIp", publicIp);
+                // Validate and get the arguments from request
+                var argumentsTuple = Helpers.ValidateRequest(apiGatewayProxyRequest);
 
                 //TODO: Complete the logic here that will update the Public IP of the Route 53 domain
 
-                Console.WriteLine($"{_prefix} Return 200");
+                // Create return body
+                var body = new Dictionary<string, string>();
+                body.Add("domain", argumentsTuple.domain);
+                body.Add("publicIp", argumentsTuple.publicIp);
+
+                var serializedBody = System.Text.Json.JsonSerializer.Serialize(body);
+
+                // Return
+                Console.WriteLine($"{_prefix} Return 200, with body: {serializedBody}");
                 return new APIGatewayProxyResponse
                 {
                     StatusCode = 200,
-                    Body = System.Text.Json.JsonSerializer.Serialize(body)
+                    Body = serializedBody
                 };
             }
-
-            // Technically this should bever run, if there is a validation error, it will be thrown before this
-            // try clean this up though, it's not nice code
-            return null;
-        }
-
-        /// <summary>
-        /// Validates that all required arguments are present. HttpMethod, QueryStringParamater, and Headers
-        /// </summary>
-        /// <param name="apiGatewayProxyRequest">the request from the API Gateway proxy</param>
-        /// <returns></returns>
-        public static bool ValidateRequest(APIGatewayProxyRequest apiGatewayProxyRequest)
-        {
-            Console.WriteLine($"{_prefix} ValidateRequest");
-
-            if (apiGatewayProxyRequest != null)
+            catch (ArgumentNullException ex)
             {
-                if (apiGatewayProxyRequest.HttpMethod == "PATCH")
-                {
-                    if (apiGatewayProxyRequest.QueryStringParameters != null && apiGatewayProxyRequest.QueryStringParameters.TryGetValue("domain", out string domain))
-                    {
-                        if (apiGatewayProxyRequest.Headers != null && apiGatewayProxyRequest.Headers.Any())
-                        {
-                            if (apiGatewayProxyRequest.Headers.TryGetValue("X-Forwarded-For", out string publicIpAddress))
-                                return true;
-
-                            else
-                                throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No X-Forwarded-For header present.");
-                        }
-                        else
-                            throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No request headers present.");
-                    }
-                    else
-                        throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No 'domain' query string present.");
-                }
-                else
-                    throw new ArgumentException($"Invalid HttpMethod {apiGatewayProxyRequest.HttpMethod}.", "apiGatewayProxyRequest.HttpMethod");
+                Console.WriteLine($"{_prefix} ArgumentNullException: {ex.Message}");
+                return new APIGatewayProxyResponse { StatusCode = 400, Body = Helpers.SerializeException(ex) };
             }
-            else
-                throw new ArgumentNullException(nameof(apiGatewayProxyRequest), "The argument cannot be null.");
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"{_prefix} ArgumentException: {ex.Message}");
+                return new APIGatewayProxyResponse { StatusCode = 400, Body = Helpers.SerializeException(ex) };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{_prefix} Exception: {ex.Message}");
+                return new APIGatewayProxyResponse { StatusCode = 500, Body = Helpers.SerializeException(ex) };
+            }
         }
     }
 }

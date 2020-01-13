@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lambda.SetMyPublicIp", "Lam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lambda.SetMyPublicIp.Tests", "Lambda.SetMyPublicIp.Tests\Lambda.SetMyPublicIp.Tests.csproj", "{0593360E-EAFD-42A0-8DDE-631714D35A76}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{9AF96D22-4CA4-4113-99D3-13E281A45E13}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -21,9 +21,12 @@ namespace Lambda.SetMyPublicIp.Tests
             // Arrange
             APIGatewayProxyRequest apiGatewayProxyRequest = null;
 
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>("apiGatewayProxyRequest", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
-            Assert.Equal("The argument cannot be null. (Parameter 'apiGatewayProxyRequest')", exception.Message);
+            // Act
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+
+            // Assert
+            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
+            Assert.Contains("The argument cannot be null.", apiGatewayProxyResponse.Body);
         }
 
         [Fact]
@@ -33,9 +36,12 @@ namespace Lambda.SetMyPublicIp.Tests
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "POST";
 
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentException>("apiGatewayProxyRequest.HttpMethod", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
-            Assert.Equal("Invalid HttpMethod POST. (Parameter 'apiGatewayProxyRequest.HttpMethod')", exception.Message);
+            // Act
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+
+            // Assert
+            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
+            Assert.Contains("Invalid HttpMethod POST.", apiGatewayProxyResponse.Body);
         }
 
         [Fact]
@@ -45,9 +51,12 @@ namespace Lambda.SetMyPublicIp.Tests
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
 
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>("apiGatewayProxyRequest.QueryStringParameters", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
-            Assert.Equal("No 'domain' query string present. (Parameter 'apiGatewayProxyRequest.QueryStringParameters')", exception.Message);
+            // Act
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+
+            // Assert
+            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
+            Assert.Contains("No domain query string present.", apiGatewayProxyResponse.Body);
         }
 
         [Fact]
@@ -59,9 +68,12 @@ namespace Lambda.SetMyPublicIp.Tests
             apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
             apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
 
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>("apiGatewayProxyRequest.Headers", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
-            Assert.Equal("No request headers present. (Parameter 'apiGatewayProxyRequest.Headers')", exception.Message);
+            // Act
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+
+            // Assert
+            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
+            Assert.Contains("No request headers present.", apiGatewayProxyResponse.Body);
         }
 
         [Fact]
@@ -75,9 +87,12 @@ namespace Lambda.SetMyPublicIp.Tests
             apiGatewayProxyRequest.Headers = new Dictionary<string, string>();
             apiGatewayProxyRequest.Headers.Add("key", "value");
 
-            // Act & Assert
-            var exception = Assert.Throws<ArgumentNullException>("apiGatewayProxyRequest.Headers", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
-            Assert.Equal("No X-Forwarded-For header present. (Parameter 'apiGatewayProxyRequest.Headers')", exception.Message);
+            // Act
+            var apiGatewayProxyResponse = Function.SetMyPublicIp(apiGatewayProxyRequest);
+
+            // Assert
+            Assert.Equal(400, apiGatewayProxyResponse.StatusCode);
+            Assert.Contains("No X-Forwarded-For header present.", apiGatewayProxyResponse.Body);
         }
 
         [Fact]
