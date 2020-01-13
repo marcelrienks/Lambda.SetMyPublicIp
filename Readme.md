@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/marcelrienks/SetMyPublicIp/_apis/build/status/marcelrienks.Lambda.SetMyPublicIp?branchName=master)](https://dev.azure.com/marcelrienks/SetMyPublicIp/_build/latest?definitionId=15&branchName=master)
+
 # SetMyPiblicIp
 This is a DDNS (Dynamic DNS) solution implemented using AWS Route 53 and AWS Lambda.
 
