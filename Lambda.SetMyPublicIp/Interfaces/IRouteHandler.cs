@@ -1,7 +1,7 @@
 ﻿using Amazon.Route53;
 using System.Threading.Tasks;
 
-namespace Lambda.SetMyPublicIp
+namespace Lambda.SetMyPublicIp.Interfaces
 {
     public interface IRouteHandler
     {

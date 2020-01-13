@@ -2,8 +2,12 @@ using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.Json;
 using Amazon.Route53;
+using Lambda.SetMyPublicIp.Handlers;
+using Lambda.SetMyPublicIp.Helpers;
+using Lambda.SetMyPublicIp.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lambda.SetMyPublicIp
@@ -40,10 +44,10 @@ namespace Lambda.SetMyPublicIp
         {
             try
             {
-                Helpers.Log("Entrypoint");
+                Logging.Log("Entrypoint");
 
                 // Validate and get the arguments from request
-                var (hostedZoneId, domain, publicIp) = Helpers.ValidateRequest(apiGatewayProxyRequest);
+                var (hostedZoneId, domain, publicIp) = ValidateRequest(apiGatewayProxyRequest);
 
                 // Update the recorset with the public IP
                 var status = await _routeHandler.UpsertRecordset(hostedZoneId, domain, publicIp);
@@ -57,7 +61,7 @@ namespace Lambda.SetMyPublicIp
                 var serializedBody = System.Text.Json.JsonSerializer.Serialize(body);
 
                 // Return
-                Helpers.Log($"Return 200, with body: {serializedBody}");
+                Logging.Log($"Return 200, with body: {serializedBody}");
                 return new APIGatewayProxyResponse
                 {
                     StatusCode = 200,
@@ -66,19 +70,55 @@ namespace Lambda.SetMyPublicIp
             }
             catch (ArgumentNullException ex)
             {
-                Helpers.Log($"ArgumentNullException: {ex.Message}");
-                return new APIGatewayProxyResponse { StatusCode = 400, Body = Helpers.SerializeException(ex) };
+                Logging.Log($"ArgumentNullException: {ex.Message}");
+                return new APIGatewayProxyResponse { StatusCode = 400, Body = General.SerializeException(ex) };
             }
             catch (ArgumentException ex)
             {
-                Helpers.Log($"ArgumentException: {ex.Message}");
-                return new APIGatewayProxyResponse { StatusCode = 400, Body = Helpers.SerializeException(ex) };
+                Logging.Log($"ArgumentException: {ex.Message}");
+                return new APIGatewayProxyResponse { StatusCode = 400, Body = General.SerializeException(ex) };
             }
             catch (Exception ex)
             {
-                Helpers.Log($"Exception: {ex.Message}");
-                return new APIGatewayProxyResponse { StatusCode = 500, Body = Helpers.SerializeException(ex) };
+                Logging.Log($"Exception: {ex.Message}");
+                return new APIGatewayProxyResponse { StatusCode = 500, Body = General.SerializeException(ex) };
             }
+        }
+
+        /// <summary>
+        /// Validates that all required arguments are present. HttpMethod, QueryStringParamater, and Headers
+        /// </summary>
+        /// <param name="apiGatewayProxyRequest">the request from the API Gateway proxy</param>
+        /// <returns></returns>
+        private static (string hostedZoneId, string domain, string publicIp) ValidateRequest(APIGatewayProxyRequest apiGatewayProxyRequest)
+        {
+            Logging.Log("ValidateRequest");
+
+            if (apiGatewayProxyRequest == null)
+                throw new ArgumentNullException(nameof(apiGatewayProxyRequest), "The argument cannot be null.");
+
+            if (apiGatewayProxyRequest.HttpMethod != "PATCH")
+                throw new ArgumentException($"Invalid HttpMethod {apiGatewayProxyRequest.HttpMethod}.", "apiGatewayProxyRequest.HttpMethod");
+
+            if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("hostedZoneId", out string hostedZoneId))
+                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No hostedZoneId query string present.");
+
+            Logging.Log($"hostedZoneId: {hostedZoneId}");
+
+            if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("domain", out string domain))
+                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No domain query string present.");
+
+            Logging.Log($"domain: {domain}");
+
+            if (apiGatewayProxyRequest.Headers == null || !apiGatewayProxyRequest.Headers.Any())
+                throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No request headers present.");
+
+            if (!apiGatewayProxyRequest.Headers.TryGetValue("X-Forwarded-For", out string publicIp))
+                throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No X-Forwarded-For header present.");
+
+            Logging.Log($"publicIp: {publicIp}");
+
+            return (hostedZoneId, domain, publicIp);
         }
     }
 }

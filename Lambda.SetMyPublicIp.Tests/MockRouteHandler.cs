@@ -1,4 +1,5 @@
 ﻿using Amazon.Route53;
+using Lambda.SetMyPublicIp.Interfaces;
 using System.Threading.Tasks;
 
 namespace Lambda.SetMyPublicIp.Tests

@@ -1,10 +1,11 @@
 ﻿using Amazon.Route53;
 using Amazon.Route53.Model;
+using Lambda.SetMyPublicIp.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Lambda.SetMyPublicIp
+namespace Lambda.SetMyPublicIp.Handlers
 {
     public class RouteHandler : IRouteHandler
     {
@@ -48,7 +49,7 @@ namespace Lambda.SetMyPublicIp
                 return response.ChangeInfo.Status;
 
             else
-                throw new Exception();
+                throw new Exception($"Failed to update Record Set, Status: {response.HttpStatusCode}");
         }
     }
 }
