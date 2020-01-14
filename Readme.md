@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/marcelrienks/Lambda.SetMyPublicIp/workflows/dotnet-core/badge.svg)](https://github.com/marcelrienks/Lambda.SetMyPublicIp/actions?query=workflow%3Adotnet-core)
 
-# SetMyPiblicIp
+# SetMyPublicIp
 This is a DDNS (Dynamic DNS) solution implemented using AWS Route 53 and AWS Lambda.
 
 The goal is to have some sort of recurring script, which will call an API function through AWS API Gateway, executing this Lambda function, which updates the record set of a domain registered in AWS Route 53 to point to the public IP address of the network that executed the recurring script.
