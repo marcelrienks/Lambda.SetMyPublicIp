@@ -47,7 +47,7 @@ namespace Lambda.SetMyPublicIp.Tests
 
             // Act & assert
             var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest.QueryStringParameters", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
-            Assert.Contains("No hostedZoneId query string present. (Parameter 'apiGatewayProxyRequest.QueryStringParameters')", exception.Message);
+            Assert.Contains("No hostedZone path paramater present. (Parameter 'apiGatewayProxyRequest.QueryStringParameters')", exception.Message);
         }
 
         [Fact]
@@ -56,12 +56,12 @@ namespace Lambda.SetMyPublicIp.Tests
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
-            apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
-            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
+            apiGatewayProxyRequest.PathParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.PathParameters.Add("hostedZoneId", "123456");
 
             // Act & assert
             var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest.QueryStringParameters", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
-            Assert.Contains("No domain query string present. (Parameter 'apiGatewayProxyRequest.QueryStringParameters')", exception.Message);
+            Assert.Contains("No domain path paramater present. (Parameter 'apiGatewayProxyRequest.QueryStringParameters')", exception.Message);
         }
 
         [Fact]
@@ -70,9 +70,9 @@ namespace Lambda.SetMyPublicIp.Tests
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
-            apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
-            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
-            apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
+            apiGatewayProxyRequest.PathParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.PathParameters.Add("hostedZoneId", "123456");
+            apiGatewayProxyRequest.PathParameters.Add("domainname", "test.com");
 
             // Act & assert
             var exception = await Assert.ThrowsAsync<ArgumentNullException>("apiGatewayProxyRequest.Headers", () => Function.SetMyPublicIp(apiGatewayProxyRequest));
@@ -85,9 +85,9 @@ namespace Lambda.SetMyPublicIp.Tests
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
-            apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
-            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
-            apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
+            apiGatewayProxyRequest.PathParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.PathParameters.Add("hostedZoneId", "123456");
+            apiGatewayProxyRequest.PathParameters.Add("domainname", "test.com");
             apiGatewayProxyRequest.Headers = new Dictionary<string, string>();
             apiGatewayProxyRequest.Headers.Add("key", "value");
 
@@ -102,9 +102,9 @@ namespace Lambda.SetMyPublicIp.Tests
             // Arrange
             var apiGatewayProxyRequest = new APIGatewayProxyRequest();
             apiGatewayProxyRequest.HttpMethod = "PATCH";
-            apiGatewayProxyRequest.QueryStringParameters = new Dictionary<string, string>();
-            apiGatewayProxyRequest.QueryStringParameters.Add("hostedZoneId", "123456");
-            apiGatewayProxyRequest.QueryStringParameters.Add("domain", "test.com");
+            apiGatewayProxyRequest.PathParameters = new Dictionary<string, string>();
+            apiGatewayProxyRequest.PathParameters.Add("hostedZoneId", "123456");
+            apiGatewayProxyRequest.PathParameters.Add("domainname", "test.com");
             apiGatewayProxyRequest.Headers = new Dictionary<string, string>();
             apiGatewayProxyRequest.Headers.Add("X-Forwarded-For", "127.0.0.1, 127.0.0.2");
 

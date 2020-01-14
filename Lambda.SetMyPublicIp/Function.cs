@@ -93,14 +93,14 @@ namespace Lambda.SetMyPublicIp
                 throw new ArgumentException($"Invalid HttpMethod {apiGatewayProxyRequest.HttpMethod}.", "apiGatewayProxyRequest.HttpMethod");
 
             // Validate and get query param 'hostedZoneId' is present
-            if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("hostedZoneId", out string hostedZoneId))
-                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No hostedZoneId query string present.");
+            if (apiGatewayProxyRequest.PathParameters == null || !apiGatewayProxyRequest.PathParameters.TryGetValue("hostedZoneId", out string hostedZoneId))
+                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No hostedZone path paramater present.");
 
             Logging.Log($"hostedZoneId: {hostedZoneId}");
 
             // Validate and get query param 'domain' is present
-            if (apiGatewayProxyRequest.QueryStringParameters == null || !apiGatewayProxyRequest.QueryStringParameters.TryGetValue("domain", out string domain))
-                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No domain query string present.");
+            if (apiGatewayProxyRequest.PathParameters == null || !apiGatewayProxyRequest.PathParameters.TryGetValue("domainname", out string domain))
+                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No domain path paramater present.");
 
             Logging.Log($"domain: {domain}");
 
