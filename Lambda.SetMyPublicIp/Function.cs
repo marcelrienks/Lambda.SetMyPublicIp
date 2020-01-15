@@ -1,10 +1,12 @@
 using Amazon.Lambda.APIGatewayEvents;
+using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.Json;
 using Amazon.Route53;
 using Lambda.SetMyPublicIp.Handlers;
 using Lambda.SetMyPublicIp.Helpers;
 using Lambda.SetMyPublicIp.Interfaces;
+using Lambda.SetMyPublicIp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +27,11 @@ namespace Lambda.SetMyPublicIp
         /// The main entry point for the custom runtime.
         /// </summary>
         /// <param name="args"></param>
-        private static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             _routeHandler = new RouteHandler(new AmazonRoute53Client());
 
-            Func<APIGatewayProxyRequest, Task<APIGatewayProxyResponse>> func = SetMyPublicIp;
+            Func<Request, ILambdaContext, Task<string>> func = SetMyPublicIp;
             using (var handlerWrapper = HandlerWrapper.GetHandlerWrapper(func, new JsonSerializer()))
             using (var bootstrap = new LambdaBootstrap(handlerWrapper)) { await bootstrap.RunAsync(); }
         }
@@ -40,33 +42,26 @@ namespace Lambda.SetMyPublicIp
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns>an <c>APIGatewayProxyResponse</c> indicating if the function call was successfull</returns>
-        public async static Task<APIGatewayProxyResponse> SetMyPublicIp(APIGatewayProxyRequest apiGatewayProxyRequest)
+        public static async Task<string> SetMyPublicIp(Request request, ILambdaContext context)
         {
             try
             {
-                Logging.Log("Entrypoint");
+                Logging.Log("Entrypoint...");
 
                 // Validate and get the arguments from request
-                var (hostedZoneId, domain, publicIp) = ValidateRequest(apiGatewayProxyRequest);
+                ValidateRequest(request);
 
                 // Update the recorset with the public IP
-                var status = await _routeHandler.UpsertRecordset(hostedZoneId, domain, publicIp);
+                var status = await _routeHandler.UpsertRecordset(request.HostedZoneId, request.DomainName, GeneralHelpers.GetFirstIp(request.PublicIps));
+                Logging.Log($"Status from Route53: {status}");
 
                 // Create return body
                 var body = new Dictionary<string, string>();
                 body.Add("status", status);
-                body.Add("domain", domain);
-                body.Add("publicIp", publicIp);
+                body.Add("domain", request.DomainName);
+                body.Add("publicIp", GeneralHelpers.GetFirstIp(request.PublicIps));
 
-                var serializedBody = System.Text.Json.JsonSerializer.Serialize(body);
-
-                // Return
-                Logging.Log($"Return 200, with body: {serializedBody}");
-                return new APIGatewayProxyResponse
-                {
-                    StatusCode = 200,
-                    Body = serializedBody
-                };
+                return System.Text.Json.JsonSerializer.Serialize(body);
             }
             catch (Exception ex)
             {
@@ -78,46 +73,33 @@ namespace Lambda.SetMyPublicIp
         /// <summary>
         /// Validates that all required arguments are present. HttpMethod, QueryStringParamater, and Headers
         /// </summary>
-        /// <param name="apiGatewayProxyRequest">the request from the API Gateway proxy</param>
+        /// <param name="request">the request from the API Gateway</param>
         /// <returns></returns>
-        private static (string hostedZoneId, string domain, string publicIp) ValidateRequest(APIGatewayProxyRequest apiGatewayProxyRequest)
+        private static void ValidateRequest(Request request)
         {
-            Logging.Log("ValidateRequest");
+            Logging.Log("Validate Request...");
 
             // Validate that request is not null
-            if (apiGatewayProxyRequest == null)
-                throw new ArgumentNullException(nameof(apiGatewayProxyRequest), "The argument cannot be null.");
-
-            // Validate that the correct Http Method is used
-            if (apiGatewayProxyRequest.HttpMethod != "PATCH")
-                throw new ArgumentException($"Invalid HttpMethod {apiGatewayProxyRequest.HttpMethod}.", "apiGatewayProxyRequest.HttpMethod");
+            if (request == null)
+                throw new ArgumentNullException(nameof(request), "The argument cannot be null.");
 
             // Validate and get query param 'hostedZoneId' is present
-            if (apiGatewayProxyRequest.PathParameters == null || !apiGatewayProxyRequest.PathParameters.TryGetValue("hostedZoneId", out string hostedZoneId))
-                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No hostedZone path paramater present.");
+            if (string.IsNullOrEmpty(request.HostedZoneId))
+                throw new ArgumentException("No HostedZoneId present.", "request.HostedZoneId");
 
-            Logging.Log($"hostedZoneId: {hostedZoneId}");
+            Logging.Log($"HostedZoneId: {request.HostedZoneId}");
 
-            // Validate and get query param 'domain' is present
-            if (apiGatewayProxyRequest.PathParameters == null || !apiGatewayProxyRequest.PathParameters.TryGetValue("domainname", out string domain))
-                throw new ArgumentNullException("apiGatewayProxyRequest.QueryStringParameters", "No domain path paramater present.");
+            // Validate and get query param 'hostedZoneId' is present
+            if (string.IsNullOrEmpty(request.DomainName))
+                throw new ArgumentException("No DomainName present.", "request.DomainName");
 
-            Logging.Log($"domain: {domain}");
+            Logging.Log($"DomainName: {request.DomainName}");
 
-            // Validate that headders are present
-            if (apiGatewayProxyRequest.Headers == null || !apiGatewayProxyRequest.Headers.Any())
-                throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No request headers present.");
+            // Validate and get query param 'hostedZoneId' is present
+            if (string.IsNullOrEmpty(request.PublicIps))
+                throw new ArgumentException("No PublicIps present.", "request.PublicIps");
 
-            // Validate and get header 'X-Forwarded-For' is present
-            if (!apiGatewayProxyRequest.Headers.TryGetValue("X-Forwarded-For", out string publicIp))
-                throw new ArgumentNullException("apiGatewayProxyRequest.Headers", "No X-Forwarded-For header present.");
-
-            // Ensure only first IP is taken, incase there are multiple
-            publicIp = publicIp.Split(',').FirstOrDefault();
-
-            Logging.Log($"publicIp: {publicIp}");
-
-            return (hostedZoneId, domain, publicIp);
+            Logging.Log($"PublicIps: {request.PublicIps}");
         }
     }
 }

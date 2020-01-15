@@ -5,6 +5,6 @@ namespace Lambda.SetMyPublicIp.Interfaces
 {
     public interface IRouteHandler
     {
-        Task<ChangeStatus> UpsertRecordset(string hostedZoneId, string domain, string ipAddress);
+        Task<ChangeStatus> UpsertRecordset(string hostedZoneId, string domainName, string publicIp);
     }
 }

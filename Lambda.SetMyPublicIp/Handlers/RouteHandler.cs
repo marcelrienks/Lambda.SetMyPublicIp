@@ -4,7 +4,6 @@ using Lambda.SetMyPublicIp.Helpers;
 using Lambda.SetMyPublicIp.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lambda.SetMyPublicIp.Handlers
@@ -21,18 +20,18 @@ namespace Lambda.SetMyPublicIp.Handlers
         /// <summary>
         /// Creates a record set if none exists, else updates an existing record set of type A, assigning the supplied public ip address to the supplied domain
         /// </summary>
-        /// <param name="hostedZoneId">teh hosted zone id to create or update a recordset for</param>
-        /// <param name="domain">the domain to assign the public ip to</param>
-        /// <param name="ipAddress">teh public ip to assign to the supplied domain</param>
+        /// <param name="hostedZoneId">the hosted zone id to create or update a recordset for</param>
+        /// <param name="domainName">the domain to assign the public ip to</param>
+        /// <param name="publicIp">the public ip to assign to the supplied domain</param>
         /// <returns></returns>
-        public async Task<ChangeStatus> UpsertRecordset(string hostedZoneId, string domain, string ipAddress)
+        public async Task<ChangeStatus> UpsertRecordset(string hostedZoneId, string domainName, string publicIp)
         {
             var recordSet = new ResourceRecordSet
             {
-                Name = domain,
+                Name = domainName,
                 TTL = 60,
                 Type = RRType.A,
-                ResourceRecords = new List<ResourceRecord> { new ResourceRecord { Value = ipAddress } }
+                ResourceRecords = new List<ResourceRecord> { new ResourceRecord { Value = publicIp } }
             };
 
             var change = new Change
