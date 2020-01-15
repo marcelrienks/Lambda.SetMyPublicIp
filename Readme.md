@@ -19,6 +19,10 @@ Complete this
 Complete this
 ### API Gateway configuration
 Complete this
+* Create Resources
+* Create Method
+* Configure the params on the 'Method Request' including X-Forwarded-For
+* Only create a Mapping Template on 'Integration Request'
 ### AWS Lambda setup
 Complete this
 ### Script Example:
