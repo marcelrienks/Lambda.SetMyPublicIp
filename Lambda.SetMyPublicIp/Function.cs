@@ -68,7 +68,7 @@ namespace Lambda.SetMyPublicIp
                 PublicIp = GeneralHelpers.GetFirstIp(request.PublicIps)
             });
 
-            Logging.Log($"Change Request response: {response}");
+            Logging.Log($"Response: {response}");
             return response;
         }
 
