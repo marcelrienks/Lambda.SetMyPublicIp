@@ -39,8 +39,8 @@ namespace Lambda.SetMyPublicIp
         /// <summary>
         /// This function takes in the name of the Route 53 domain to be updated, inspects the request to find the public IP, and assigns this IP to the domain name in Route 53.
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="context"></param>
+        /// <param name="request">the request model containing HostedZonneId, DomainName, PublicIps</param>
+        /// <param name="context">the Lambda context</param>
         /// <returns>an <c>APIGatewayProxyResponse</c> indicating if the function call was successfull</returns>
         public static async Task<string> SetMyPublicIp(Request request, ILambdaContext context)
         {
@@ -52,12 +52,12 @@ namespace Lambda.SetMyPublicIp
                 ValidateRequest(request);
 
                 // Update the recorset with the public IP
-                var status = await _routeHandler.UpsertRecordset(request.HostedZoneId, request.DomainName, GeneralHelpers.GetFirstIp(request.PublicIps));
-                Logging.Log($"Status from Route53: {status}");
+                var requestId = await _routeHandler.UpsertRecordset(request.HostedZoneId, request.DomainName, GeneralHelpers.GetFirstIp(request.PublicIps));
+                Logging.Log($"Request id from Route53: {requestId}");
 
                 // Create return body
                 var body = new Dictionary<string, string>();
-                body.Add("status", status);
+                body.Add("requestId", requestId);
                 body.Add("domain", request.DomainName);
                 body.Add("publicIp", GeneralHelpers.GetFirstIp(request.PublicIps));
 

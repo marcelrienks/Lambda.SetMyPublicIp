@@ -6,9 +6,9 @@ namespace Lambda.SetMyPublicIp.Tests.Mocks
 {
     public class MockedRouteHandler : IRouteHandler
     {
-        public Task<ChangeStatus> UpsertRecordset(string hostedZoneId, string domain, string ipAddress)
+        public Task<string> UpsertRecordset(string hostedZoneId, string domain, string ipAddress)
         {
-            return Task.FromResult(new ChangeStatus("OK"));
+            return Task.FromResult("007");
         }
     }
 }
