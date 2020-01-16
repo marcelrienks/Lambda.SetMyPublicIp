@@ -33,7 +33,7 @@ namespace Lambda.SetMyPublicIp
             {
                 _routeHandler = new RouteHandler(new AmazonRoute53Client());
 
-                Func<Request, ILambdaContext, Task<string>> func = SetMyPublicIp;
+                Func<Request, ILambdaContext, Task<Response>> func = SetMyPublicIp;
                 using (var handlerWrapper = HandlerWrapper.GetHandlerWrapper(func, new JsonSerializer()))
                 using (var bootstrap = new LambdaBootstrap(handlerWrapper)) { await bootstrap.RunAsync(); }
             }
@@ -50,7 +50,7 @@ namespace Lambda.SetMyPublicIp
         /// <param name="request">the request model containing HostedZonneId, DomainName, PublicIps</param>
         /// <param name="context">the Lambda context</param>
         /// <returns>an <c>APIGatewayProxyResponse</c> indicating if the function call was successfull</returns>
-        public static async Task<string> SetMyPublicIp(Request request, ILambdaContext context)
+        public static async Task<Response> SetMyPublicIp(Request request, ILambdaContext context)
         {
             Logging.Log("Entrypoint...");
 
@@ -60,15 +60,16 @@ namespace Lambda.SetMyPublicIp
             // Update the recorset with the public IP
             var (requestId, requestStatus) = await _routeHandler.UpsertRecordset(request.HostedZoneId, request.DomainName, GeneralHelpers.GetFirstIp(request.PublicIps));
 
-            // Retrun resonse
-            var response = System.Text.Json.JsonSerializer.Serialize(new Response()
+            // Buid response
+            var response = new Response()
             {
                 ChangeRequestId = requestId,
                 ChangeRequestStatus = requestStatus,
                 PublicIp = GeneralHelpers.GetFirstIp(request.PublicIps)
-            });
+            };
 
-            Logging.Log($"Response: {response}");
+            // Return
+            Logging.Log($"Response: ChangeRequestId:{response.ChangeRequestId}, ChangeRequestStatus:{response.ChangeRequestStatus}, PublicIp:{response.PublicIp}");
             return response;
         }
 
