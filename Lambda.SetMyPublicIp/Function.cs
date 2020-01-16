@@ -29,11 +29,19 @@ namespace Lambda.SetMyPublicIp
         /// <param name="args"></param>
         public static async Task Main(string[] args)
         {
-            _routeHandler = new RouteHandler(new AmazonRoute53Client());
+            try
+            {
+                _routeHandler = new RouteHandler(new AmazonRoute53Client());
 
-            Func<Request, ILambdaContext, Task<string>> func = SetMyPublicIp;
-            using (var handlerWrapper = HandlerWrapper.GetHandlerWrapper(func, new JsonSerializer()))
-            using (var bootstrap = new LambdaBootstrap(handlerWrapper)) { await bootstrap.RunAsync(); }
+                Func<Request, ILambdaContext, Task<string>> func = SetMyPublicIp;
+                using (var handlerWrapper = HandlerWrapper.GetHandlerWrapper(func, new JsonSerializer()))
+                using (var bootstrap = new LambdaBootstrap(handlerWrapper)) { await bootstrap.RunAsync(); }
+            }
+            catch (Exception ex)
+            {
+                Logging.Log($"{typeof(Exception)}: {ex.Message}");
+                throw;
+            }
         }
 
         /// <summary>
@@ -44,30 +52,24 @@ namespace Lambda.SetMyPublicIp
         /// <returns>an <c>APIGatewayProxyResponse</c> indicating if the function call was successfull</returns>
         public static async Task<string> SetMyPublicIp(Request request, ILambdaContext context)
         {
-            try
+            Logging.Log("Entrypoint...");
+
+            // Validate and get the arguments from request
+            ValidateRequest(request);
+
+            // Update the recorset with the public IP
+            var (requestId, requestStatus) = await _routeHandler.UpsertRecordset(request.HostedZoneId, request.DomainName, GeneralHelpers.GetFirstIp(request.PublicIps));
+
+            // Retrun resonse
+            var response = System.Text.Json.JsonSerializer.Serialize(new Response()
             {
-                Logging.Log("Entrypoint...");
+                ChangeRequestId = requestId,
+                ChangeRequestStatus = requestStatus,
+                PublicIp = GeneralHelpers.GetFirstIp(request.PublicIps)
+            });
 
-                // Validate and get the arguments from request
-                ValidateRequest(request);
-
-                // Update the recorset with the public IP
-                var requestId = await _routeHandler.UpsertRecordset(request.HostedZoneId, request.DomainName, GeneralHelpers.GetFirstIp(request.PublicIps));
-                Logging.Log($"Request id from Route53: {requestId}");
-
-                // Create return body
-                var body = new Dictionary<string, string>();
-                body.Add("requestId", requestId);
-                body.Add("domain", request.DomainName);
-                body.Add("publicIp", GeneralHelpers.GetFirstIp(request.PublicIps));
-
-                return System.Text.Json.JsonSerializer.Serialize(body);
-            }
-            catch (Exception ex)
-            {
-                Logging.Log($"{typeof(Exception)}: {ex.Message}");
-                throw;
-            }
+            Logging.Log($"Change Request response: {response}");
+            return response;
         }
 
         /// <summary>

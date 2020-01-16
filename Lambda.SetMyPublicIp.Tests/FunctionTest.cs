@@ -76,7 +76,7 @@ namespace Lambda.SetMyPublicIp.Tests
             var result = Function.SetMyPublicIp(request, null).Result;
 
             // Assert
-            Assert.Equal("{\"requestId\":\"007\",\"domain\":\"test.com\",\"publicIp\":\"127.0.0.1\"}", result);
+            Assert.Equal("{\"ChangeRequestId\":\"007\",\"ChangeRequestStatus\":\"PENDING\",\"PublicIp\":\"127.0.0.1\"}", result);
         }
     }
 }

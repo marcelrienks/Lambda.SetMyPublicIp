@@ -21,32 +21,32 @@ namespace Lambda.SetMyPublicIp.Handlers
         /// <param name="hostedZoneId">the hosted zone id to create or update a recordset for</param>
         /// <param name="domainName">the domain to assign the public ip to</param>
         /// <param name="publicIp">the public ip to assign to the supplied domain</param>
-        /// <returns>the change request id</returns>
-        public async Task<string> UpsertRecordset(string hostedZoneId, string domainName, string publicIp)
+        /// <returns>the change request id and </returns>
+        public async Task<(string, string)> UpsertRecordset(string hostedZoneId, string domainName, string publicIp)
         {
-            var recordSet = new ResourceRecordSet
+            // Create recordset change request
+            var recordsetRequest = new ChangeResourceRecordSetsRequest(hostedZoneId, new ChangeBatch(new List<Change>()
             {
-                Name = domainName,
-                TTL = 60,
-                Type = RRType.A,
-                ResourceRecords = new List<ResourceRecord> { new ResourceRecord { Value = publicIp } }
-            };
+                new Change
+                {
+                    ResourceRecordSet = new ResourceRecordSet(domainName, RRType.A)
+                    {
+                        TTL = 60,
+                        ResourceRecords = new List<ResourceRecord>() {
+                            new ResourceRecord(publicIp)
+                        }
+                    },
+                    Action = ChangeAction.UPSERT
+                }
+            }));
 
-            var change = new Change
-            {
-                ResourceRecordSet = recordSet,
-                Action = ChangeAction.UPSERT
-            };
-
-            var changeBatch = new ChangeBatch { Changes = new List<Change> { change } };
-
-            var recordsetRequest = new ChangeResourceRecordSetsRequest { HostedZoneId = hostedZoneId, ChangeBatch = changeBatch };
-
+            // Reqeust change
             var recordsetResponse = await _route53Client.ChangeResourceRecordSetsAsync(recordsetRequest);
+            if (recordsetResponse.HttpStatusCode == System.Net.HttpStatusCode.OK)
+                return (recordsetResponse.ChangeInfo.Id, recordsetResponse.ChangeInfo.Status);
 
-            var changeRequest = new GetChangeRequest { Id = recordsetResponse.ChangeInfo.Id };
-
-            return changeRequest.Id;
+            else
+                throw new System.Exception($"Failed to Upsert recordset, ChangeResourceRecordSetsRequest status: {recordsetResponse.HttpStatusCode}");
         }
     }
 }
