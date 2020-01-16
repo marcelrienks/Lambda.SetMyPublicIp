@@ -1,13 +1,12 @@
-using System.Collections.Generic;
-using Xunit;
-using Amazon.Lambda.APIGatewayEvents;
 using Lambda.SetMyPublicIp.Tests.Mocks;
 using System;
 using System.Threading.Tasks;
 using Lambda.SetMyPublicIp.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Lambda.SetMyPublicIp.Tests
 {
+    [TestClass]
     public class FunctionTest
     {
         public FunctionTest()
@@ -16,29 +15,29 @@ namespace Lambda.SetMyPublicIp.Tests
             Function.Initialise(new MockedRouteHandler());
         }
 
-        [Fact]
+        [TestMethod]
         public async Task ArgumentNullExceptionForRequest()
         {
             // Arrange
             Request request = null;
 
             // Act & assert
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(nameof(request), () => Function.SetMyPublicIp(request, null));
-            Assert.Contains("The argument cannot be null. (Parameter 'request')", exception.Message);
+            var exception = await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => Function.SetMyPublicIp(request, null));
+            Assert.IsTrue(exception.Message.Contains("The argument cannot be null. (Parameter 'request')"));
         }
 
-        [Fact]
+        [TestMethod]
         public async Task ArgumentExceptionForHostedZoneId()
         {
             // Arrange
             var request = new Request();
 
             // Act & assert
-            var exception = await Assert.ThrowsAsync<ArgumentException>("request.HostedZoneId", () => Function.SetMyPublicIp(request, null));
-            Assert.Contains("No HostedZoneId present. (Parameter 'request.HostedZoneId')", exception.Message);
+            var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(() => Function.SetMyPublicIp(request, null));
+            Assert.IsTrue(exception.Message.Contains("No HostedZoneId present. (Parameter 'request.HostedZoneId')"));
         }
 
-        [Fact]
+        [TestMethod]
         public async Task ArgumentExceptionForDomainName()
         {
             // Arrange
@@ -46,11 +45,11 @@ namespace Lambda.SetMyPublicIp.Tests
             request.HostedZoneId = "123456789";
 
             // Act & assert
-            var exception = await Assert.ThrowsAsync<ArgumentException>("request.DomainName", () => Function.SetMyPublicIp(request, null));
-            Assert.Contains("No DomainName present. (Parameter 'request.DomainName')", exception.Message);
+            var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(() => Function.SetMyPublicIp(request, null));
+            Assert.IsTrue(exception.Message.Contains("No DomainName present. (Parameter 'request.DomainName')"));
         }
 
-        [Fact]
+        [TestMethod]
         public async Task ArgumentExceptionForPublicIps()
         {
             // Arrange
@@ -59,11 +58,11 @@ namespace Lambda.SetMyPublicIp.Tests
             request.DomainName = "test.com";
 
             // Act & assert
-            var exception = await Assert.ThrowsAsync<ArgumentException>("request.PublicIps", () => Function.SetMyPublicIp(request, null));
-            Assert.Contains("No PublicIps present. (Parameter 'request.PublicIps')", exception.Message);
+            var exception = await Assert.ThrowsExceptionAsync<ArgumentException>(() => Function.SetMyPublicIp(request, null));
+            Assert.IsTrue(exception.Message.Contains("No PublicIps present. (Parameter 'request.PublicIps')"));
         }
 
-        [Fact]
+        [TestMethod]
         public void Success()
         {
             // Arrange
@@ -75,8 +74,18 @@ namespace Lambda.SetMyPublicIp.Tests
             // Act
             var result = Function.SetMyPublicIp(request, null).Result;
 
+            // Expected
+            var expected = new Response()
+            {
+                ChangeRequestId = "007",
+                ChangeRequestStatus = "PENDING",
+                PublicIp = "127.0.0.1"
+            };
+
             // Assert
-            Assert.Equal("{\"ChangeRequestId\":\"007\",\"ChangeRequestStatus\":\"PENDING\",\"PublicIp\":\"127.0.0.1\"}", result);
+            Assert.AreEqual(expected.ChangeRequestId, result.ChangeRequestId);
+            Assert.AreEqual(expected.ChangeRequestStatus, result.ChangeRequestStatus);
+            Assert.AreEqual(expected.PublicIp, result.PublicIp);
         }
     }
 }
