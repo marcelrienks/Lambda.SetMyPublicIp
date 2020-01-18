@@ -1,4 +1,3 @@
-using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.RuntimeSupport;
 using Amazon.Lambda.Serialization.Json;
@@ -8,8 +7,6 @@ using Lambda.SetMyPublicIp.Helpers;
 using Lambda.SetMyPublicIp.Interfaces;
 using Lambda.SetMyPublicIp.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Lambda.SetMyPublicIp

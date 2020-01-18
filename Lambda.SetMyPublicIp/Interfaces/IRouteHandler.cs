@@ -1,5 +1,4 @@
-﻿using Amazon.Route53;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Lambda.SetMyPublicIp.Interfaces
 {
