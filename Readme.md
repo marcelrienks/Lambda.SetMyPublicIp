@@ -13,9 +13,8 @@ However the purpose of this project was to learn how to use AWS Lambda to solve 
 ## WIP (Work In Progress)
 This is still a work in progress
 ### Todo:
-* Add security Web Api Gateway method
-* Fix the Web Api Gateway response body being escaped json  
-e.g. "{\"ChangeRequestId\":\"/change/CIUVKWE0ZTBVD\",\"ChangeRequestStatus\":\"PENDING\",\"PublicIp\":\"45.220.43.183\"}"
+* Create setup app/script, that will create all user, roles, and configure API Gateway
+* Create script to recursively call SetMyPublicIp api function
 * Complete readme
 
 ## Usage
