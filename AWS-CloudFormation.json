@@ -1,148 +1,165 @@
 {
-	"AWSTemplateFormatVersion": "2010-09-09",
-	"Metadata": {
-		"AWS::CloudFormation::Designer": {
-			"a87e9281-9642-4527-a0d1-dfcc21b60e8b": {
-				"size": {
-					"width": 60,
-					"height": 60
-				},
-				"position": {
-					"x": -130,
-					"y": 50
-				},
-				"z": 1,
-				"embeds": []
-			},
-			"d359d69b-cbe4-4ad6-be39-308eeac3d136": {
-				"size": {
-					"width": 60,
-					"height": 60
-				},
-				"position": {
-					"x": -20,
-					"y": 50
-				},
-				"z": 1,
-				"embeds": [],
-				"dependson": [
-					"aeeead1c-5ef1-42d1-97e0-1906533435e1"
-				]
-			},
-			"aaace790-31a8-4987-b8a0-4f389a468570": {
-				"size": {
-					"width": 60,
-					"height": 60
-				},
-				"position": {
-					"x": 90,
-					"y": 50
-				},
-				"z": 1,
-				"embeds": []
-			}
-		}
-	},
-	"Parameters": {
-		"HostedZoneId": {
-			"Type": "AWS::Route53::HostedZone::Id",
-			"Description": "The Route53 Hosted Zone ID where the domain exists that should have it's recordet updated with a public IP"
-		}
-	},
-	"Resources": {
-		"SetMyPublicIpLambda": {
-			"Type": "AWS::Lambda::Function",
-			"Properties": {
-				"FunctionName": "SetMyPublicIp2",
-				"Description": "Function to set the IP address of a Route 53 domain to the public IP of the calling client",
-				"Handler": "not_required_for_custom_runtime",
-				"MemorySize": 128,
-				"Runtime": "Custom runtime",
-				"Role": {
-					"Ref": "MySetMyPublicIpLambdaRole"
-				}
-			},
-			"Metadata": {
-				"AWS::CloudFormation::Designer": {
-					"id": "a87e9281-9642-4527-a0d1-dfcc21b60e8b"
-				}
-			},
-			"DependsOn": [
-				"MySetMyPublicIpLambdaRole"
-			]
-		},
-		"MySetMyPublicIpLambdaRole": {
-			"Type": "AWS::IAM::Role",
-			"Properties": {
-				"AssumeRolePolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Principal": {
-								"Service": "lambda.amazonaws.com"
-							},
-							"Action": "sts:AssumeRole"
-						}
-					]
-				},
-				"Description": "Allows Lambda functions SetMyPublicIp to access other AWS services",
-				"ManagedPolicyArns": [
-					"arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
-					"arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-				],
-				"Policies": [
-					{
-						"Ref": "MySetMyPublicIpRoute53Policy"
-					}
-				],
-				"RoleName": "My.SetMyPublicIp.Lambda.Role"
-			},
-			"Metadata": {
-				"AWS::CloudFormation::Designer": {
-					"id": "d359d69b-cbe4-4ad6-be39-308eeac3d136"
-				}
-			},
-			"DependsOn": [
-				"MySetMyPublicIpRoute53Policy"
-			]
-		},
-		"MySetMyPublicIpRoute53Policy": {
-			"Type": "AWS::IAM::ManagedPolicy",
-			"Properties": {
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Action": [
-								"route53:GetChange",
-								"route53:ChangeResourceRecordSets"
-							],
-							"Resource": [
-								"arn:aws:route53:::change/*",
-								{
-									"Fn::Sub": [
-										"arn:aws:route53:::hostedzone/${HostedZoneIdValue}",
-										{
-											"HostedZoneIdValue": {
-												"Ref": "HostedZoneId"
-											}
-										}
-									]
-								}
-							]
-						}
-					]
-				},
-				"Description": "Permission to allow the Lambda associated with the role associated with this policy to change a Record Set",
-				"ManagedPolicyName": "My.SetMyPublicIp.Route53.Policy"
-			},
-			"Metadata": {
-				"AWS::CloudFormation::Designer": {
-					"id": "aaace790-31a8-4987-b8a0-4f389a468570"
-				}
-			}
-		}
-	}
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "a87e9281-9642-4527-a0d1-dfcc21b60e8b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": -130,
+                    "y": 50
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "d359d69b-cbe4-4ad6-be39-308eeac3d136": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": -20,
+                    "y": 50
+                },
+                "z": 1,
+                "embeds": [],
+                "dependson": [
+                    "aeeead1c-5ef1-42d1-97e0-1906533435e1",
+                    "aaace790-31a8-4987-b8a0-4f389a468570"
+                ]
+            },
+            "aaace790-31a8-4987-b8a0-4f389a468570": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 90,
+                    "y": 50
+                },
+                "z": 1,
+                "embeds": []
+            }
+        }
+    },
+    "Parameters": {
+        "HostedZoneId": {
+            "Type": "AWS::Route53::HostedZone::Id",
+            "Description": "The Route53 Hosted Zone ID containing the domain that should have it's recordet updated with a public IP"
+        },
+        "S3BucketName": {
+            "Type": "String",
+            "Description": "The name of an S3 bucket (same region as CloudFormation stack) that the packaged Lambda will reside in"
+        },
+        "S3ZipKey": {
+            "Type": "String",
+            "Description": "The key of the packaged Lambda that has been uploaded to S3"
+        }
+    },
+    "Resources": {
+        "SetMyPublicIpLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "FunctionName": "SetMyPublicIp2",
+                "Description": "Function to set the IP address of a Route 53 domain to the public IP of the calling client",
+                "Handler": "not_required_for_custom_runtime",
+                "MemorySize": 128,
+                "Runtime": "provided",
+                "Role": {
+                    "Fn::GetAtt": [
+                        "MySetMyPublicIpLambdaRole",
+                        "Arn"
+                    ]
+                },
+                "Code": {
+                    "S3Bucket": {
+                        "Ref": "S3BucketName"
+                    },
+                    "S3Key": {
+                        "Ref": "S3ZipKey"
+                    }
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "a87e9281-9642-4527-a0d1-dfcc21b60e8b"
+                }
+            },
+            "DependsOn": [
+                "MySetMyPublicIpLambdaRole"
+            ]
+        },
+        "MySetMyPublicIpLambdaRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Description": "Allows the Lambda SetMyPublicIp to access other AWS services",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                    {
+                        "Ref": "MySetMyPublicIpRoute53Policy"
+                    }
+                ],
+                "RoleName": "My.SetMyPublicIp.Lambda.Role.2"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d359d69b-cbe4-4ad6-be39-308eeac3d136"
+                }
+            },
+            "DependsOn": [
+                "MySetMyPublicIpRoute53Policy"
+            ]
+        },
+        "MySetMyPublicIpRoute53Policy": {
+            "Type": "AWS::IAM::ManagedPolicy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "route53:ChangeResourceRecordSets"
+                            ],
+                            "Resource": [
+                                "arn:aws:route53:::change/*",
+                                {
+                                    "Fn::Sub": [
+                                        "arn:aws:route53:::hostedzone/${HostedZoneIdValue}",
+                                        {
+                                            "HostedZoneIdValue": {
+                                                "Ref": "HostedZoneId"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Description": "Permission to allow the Lambda SetMyPublicIp access to change a specific hosted zone's record set",
+                "ManagedPolicyName": "My.SetMyPublicIp.Route53.Policy.2"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "aaace790-31a8-4987-b8a0-4f389a468570"
+                }
+            }
+        }
+    }
 }
