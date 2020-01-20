@@ -28,6 +28,8 @@ Complete this
 * Configure the params on the 'Method Request' including X-Forwarded-For
 * Only create a Mapping Template on 'Integration Request'
 ### AWS Lambda setup
-dotnet publish ./Lambda.SetMyPublicIp/Lambda.SetMyPublicIp.csproj -c Release -f netcoreapp3.1 -r linux-x64 -o ./Lambda.SetMyPublicIp/bin/SetMyPublicIp.Publish/
+dotnet tool install -g Amazon.Lambda.Tools
+dotnet tool update -g Amazon.Lambda.Tools
+dotnet lambda package (from the 'Lambda.SetMyPublicIp' project folder)
 ### Script Example:
 Complete this
