@@ -80,7 +80,8 @@
                     "S3Key": {
                         "Ref": "S3ZipKey"
                     }
-                }
+                },
+                "Timeout": 15
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
