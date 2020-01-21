@@ -45,7 +45,7 @@
             "2af110c6-c577-403d-b6c3-ba5b9e1a7a45": {
                 "size": {
                     "width": 450,
-                    "height": 270
+                    "height": 410
                 },
                 "position": {
                     "x": -153,
@@ -59,7 +59,7 @@
             "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292": {
                 "size": {
                     "width": 420,
-                    "height": 230
+                    "height": 360
                 },
                 "position": {
                     "x": -140,
@@ -77,7 +77,7 @@
             "b8f786fc-647d-4128-9466-a09bf1da447c": {
                 "size": {
                     "width": 390,
-                    "height": 190
+                    "height": 310
                 },
                 "position": {
                     "x": -130,
@@ -95,13 +95,14 @@
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
                 ]
             },
             "a4548f89-41fb-4d94-990c-0f9a4e6e267d": {
                 "size": {
                     "width": 360,
-                    "height": 150
+                    "height": 260
                 },
                 "position": {
                     "x": -120,
@@ -119,13 +120,14 @@
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c"
                 ]
             },
             "5b70e59c-1b2b-4130-8189-0a5de5e78d52": {
                 "size": {
                     "width": 330,
-                    "height": 110
+                    "height": 210
                 },
                 "position": {
                     "x": -110,
@@ -139,6 +141,7 @@
                     "2317c5f0-a7cd-4b40-9cd2-1e5723a4e573"
                 ],
                 "iscontainedinside": [
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
@@ -170,6 +173,7 @@
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52"
                 ]
             },
@@ -192,12 +196,23 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 110,
-                    "y": 290
+                    "x": 10,
+                    "y": 370
                 },
                 "z": 5,
                 "parent": "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                 "embeds": []
+            },
+            "bcdd14f4-2405-4125-addf-5446dc1658f9": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": -260,
+                    "y": 50
+                },
+                "z": 0
             }
         }
     },
@@ -424,7 +439,13 @@
                     }
                 ],
                 "Integration": {
-                    
+                    "ConnectionType": "INTERNET",
+                    "Type": "AWS",
+                    "IntegrationResponses": [
+                        {
+                            
+                        }
+                    ]
                 }
             },
             "Metadata": {
@@ -494,6 +515,15 @@
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "cb542ef9-bdaf-4189-bd18-e98699b6815a"
+                }
+            }
+        },
+        "LP4TWK1": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {},
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "bcdd14f4-2405-4125-addf-5446dc1658f9"
                 }
             }
         }
