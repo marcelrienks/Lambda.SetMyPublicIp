@@ -96,6 +96,8 @@
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
                 ]
             },
@@ -114,6 +116,8 @@
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52"
                 ],
                 "iscontainedinside": [
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
@@ -148,6 +152,8 @@
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d"
                 ]
             },
@@ -167,6 +173,8 @@
                     "0fe3d001-9e5c-4c8d-904f-c4468da1d8f3"
                 ],
                 "iscontainedinside": [
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
@@ -212,7 +220,33 @@
                     "x": -260,
                     "y": 50
                 },
-                "z": 0
+                "z": 0,
+                "embeds": [],
+                "isassociatedwith": [
+                    "a87e9281-9642-4527-a0d1-dfcc21b60e8b"
+                ],
+                "dependson": [
+                    "a87e9281-9642-4527-a0d1-dfcc21b60e8b",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
+                ]
+            },
+            "568b486e-cd42-478d-8fb9-1edbd4665229": {
+                "source": {
+                    "id": "bcdd14f4-2405-4125-addf-5446dc1658f9"
+                },
+                "target": {
+                    "id": "a87e9281-9642-4527-a0d1-dfcc21b60e8b"
+                },
+                "z": 11
+            },
+            "7b25299c-f763-4084-b50f-dc8912c7edc6": {
+                "source": {
+                    "id": "bcdd14f4-2405-4125-addf-5446dc1658f9"
+                },
+                "target": {
+                    "id": "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
+                },
+                "z": 12
             }
         }
     },
@@ -442,9 +476,7 @@
                     "ConnectionType": "INTERNET",
                     "Type": "AWS",
                     "IntegrationResponses": [
-                        {
-                            
-                        }
+                        {}
                     ]
                 }
             },
@@ -518,14 +550,29 @@
                 }
             }
         },
-        "LP4TWK1": {
+        "SetMyPublicIpLambdaPermission": {
             "Type": "AWS::Lambda::Permission",
-            "Properties": {},
+            "Properties": {
+                "Action": "lambda:InvokeFunction",
+                "FunctionName": {
+                    "Ref": "SetMyPublicIpLambda"
+                },
+                "Principal": {
+                    "Ref": "SetMyPublicIpRestApi"
+                },
+                "SourceArn": {
+                    "Ref": "SetMyPublicIpRestApi"
+                }
+            },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "bcdd14f4-2405-4125-addf-5446dc1658f9"
                 }
-            }
+            },
+            "DependsOn": [
+                "SetMyPublicIpLambda",
+                "SetMyPublicIpRestApi"
+            ]
         }
     }
 }
