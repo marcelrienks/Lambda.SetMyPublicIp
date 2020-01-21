@@ -44,7 +44,7 @@
             },
             "2af110c6-c577-403d-b6c3-ba5b9e1a7a45": {
                 "size": {
-                    "width": 190,
+                    "width": 450,
                     "height": 270
                 },
                 "position": {
@@ -58,7 +58,7 @@
             },
             "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292": {
                 "size": {
-                    "width": 160,
+                    "width": 420,
                     "height": 230
                 },
                 "position": {
@@ -76,7 +76,7 @@
             },
             "b8f786fc-647d-4128-9466-a09bf1da447c": {
                 "size": {
-                    "width": 140,
+                    "width": 390,
                     "height": 190
                 },
                 "position": {
@@ -90,12 +90,16 @@
                 ],
                 "iscontainedinside": [
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
                 ]
             },
             "a4548f89-41fb-4d94-990c-0f9a4e6e267d": {
                 "size": {
-                    "width": 120,
+                    "width": 360,
                     "height": 150
                 },
                 "position": {
@@ -109,12 +113,16 @@
                 ],
                 "iscontainedinside": [
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c"
                 ]
             },
             "5b70e59c-1b2b-4130-8189-0a5de5e78d52": {
                 "size": {
-                    "width": 100,
+                    "width": 330,
                     "height": 110
                 },
                 "position": {
@@ -124,9 +132,15 @@
                 "z": 4,
                 "parent": "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                 "embeds": [
+                    "cb542ef9-bdaf-4189-bd18-e98699b6815a",
+                    "0fe3d001-9e5c-4c8d-904f-c4468da1d8f3",
                     "2317c5f0-a7cd-4b40-9cd2-1e5723a4e573"
                 ],
                 "iscontainedinside": [
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d"
                 ]
@@ -143,10 +157,43 @@
                 "z": 5,
                 "parent": "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                 "embeds": [],
+                "isassociatedwith": [
+                    "0fe3d001-9e5c-4c8d-904f-c4468da1d8f3"
+                ],
                 "iscontainedinside": [
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52"
                 ]
+            },
+            "0fe3d001-9e5c-4c8d-904f-c4468da1d8f3": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 10,
+                    "y": 290
+                },
+                "z": 5,
+                "parent": "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                "embeds": []
+            },
+            "cb542ef9-bdaf-4189-bd18-e98699b6815a": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 110,
+                    "y": 290
+                },
+                "z": 5,
+                "parent": "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                "embeds": []
             }
         }
     },
@@ -343,7 +390,7 @@
                 }
             }
         },
-        "PatchMethod": {
+        "SetMyPublicIpPatchMethod": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
                 "ResourceId": {
@@ -351,14 +398,87 @@
                 },
                 "AuthorizationType": "AWS_IAM",
                 "HttpMethod": "PATCH",
-                "Integration": {},
-                "MethodResponses": {},
                 "OperationName": "Set my public IP",
-                "RequestParameters": {}
+                "RequestParameters": {
+                    "method.request.path.hostedzoneid": true,
+                    "method.request.path.domainname": true,
+                    "method.request.header.x-forwarded-for": true
+                },
+                "RequestModels": [
+                    {
+                        "Ref": "SetMyPublicIpRequestModel"
+                    }
+                ],
+                "MethodResponses": {},
+                "Integration": {}
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "2317c5f0-a7cd-4b40-9cd2-1e5723a4e573"
+                }
+            }
+        },
+        "SetMyPublicIpRequestModel": {
+            "Type": "AWS::ApiGateway::Model",
+            "Properties": {
+                "ContentType": "application/json",
+                "Name": "SetMyPublicIpRequest",
+                "Description": "Request model for SetMyPublicIp Lambda",
+                "RestApiId": {
+                    "Ref": "SetMyPublicIpTwo"
+                },
+                "Schema": {
+                    "$schema": "http://json-schema.org/draft-04/schema#",
+                    "title": "Request",
+                    "type": "object",
+                    "properties": {
+                        "HostedZoneId": {
+                            "type": "string"
+                        },
+                        "DomainName": {
+                            "type": "string"
+                        },
+                        "PublicIps": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "0fe3d001-9e5c-4c8d-904f-c4468da1d8f3"
+                }
+            }
+        },
+        "SetMyPublicIpResponseModel": {
+            "Type": "AWS::ApiGateway::Model",
+            "Properties": {
+                "ContentType": "application/json",
+                "Name": "SetMyPublicIpResponse",
+                "Description": "Response model for SetMyPublicIp Lambda",
+                "RestApiId": {
+                    "Ref": "SetMyPublicIpTwo"
+                },
+                "Schema": {
+                    "$schema": "http://json-schema.org/draft-04/schema#",
+                    "title": "Request",
+                    "type": "object",
+                    "properties": {
+                        "ChangeRequestId": {
+                            "type": "string"
+                        },
+                        "ChangeRequestStatus": {
+                            "type": "string"
+                        },
+                        "PublicIp": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "cb542ef9-bdaf-4189-bd18-e98699b6815a"
                 }
             }
         }
