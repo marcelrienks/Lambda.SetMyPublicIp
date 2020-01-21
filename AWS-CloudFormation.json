@@ -94,6 +94,7 @@
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
                 ]
             },
@@ -112,6 +113,7 @@
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52"
                 ],
                 "iscontainedinside": [
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
@@ -142,6 +144,7 @@
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d"
                 ]
             },
@@ -161,6 +164,7 @@
                     "0fe3d001-9e5c-4c8d-904f-c4468da1d8f3"
                 ],
                 "iscontainedinside": [
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
@@ -409,8 +413,19 @@
                         "Ref": "SetMyPublicIpRequestModel"
                     }
                 ],
-                "MethodResponses": {},
-                "Integration": {}
+                "MethodResponses": [
+                    {
+                        "ResponseModels": [
+                            {
+                                "Ref": "SetMyPublicIpResponseModel"
+                            }
+                        ],
+                        "StatusCode": "202"
+                    }
+                ],
+                "Integration": {
+                    
+                }
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
