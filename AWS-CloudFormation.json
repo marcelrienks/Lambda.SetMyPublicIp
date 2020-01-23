@@ -71,6 +71,7 @@
                     "b8f786fc-647d-4128-9466-a09bf1da447c"
                 ],
                 "iscontainedinside": [
+                    "2af110c6-c577-403d-b6c3-ba5b9e1a7a45",
                     "2af110c6-c577-403d-b6c3-ba5b9e1a7a45"
                 ]
             },
@@ -98,6 +99,11 @@
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
                     "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
                 ]
             },
@@ -116,6 +122,11 @@
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52"
                 ],
                 "iscontainedinside": [
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
+                    "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
                     "b8f786fc-647d-4128-9466-a09bf1da447c",
@@ -154,6 +165,11 @@
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
+                    "a4548f89-41fb-4d94-990c-0f9a4e6e267d",
                     "a4548f89-41fb-4d94-990c-0f9a4e6e267d"
                 ]
             },
@@ -182,6 +198,11 @@
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
+                    "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
                     "5b70e59c-1b2b-4130-8189-0a5de5e78d52"
                 ]
             },
@@ -196,7 +217,10 @@
                 },
                 "z": 5,
                 "parent": "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
-                "embeds": []
+                "embeds": [],
+                "iscontainedinside": [
+                    "2af110c6-c577-403d-b6c3-ba5b9e1a7a45"
+                ]
             },
             "cb542ef9-bdaf-4189-bd18-e98699b6815a": {
                 "size": {
@@ -209,7 +233,10 @@
                 },
                 "z": 5,
                 "parent": "5b70e59c-1b2b-4130-8189-0a5de5e78d52",
-                "embeds": []
+                "embeds": [],
+                "iscontainedinside": [
+                    "2af110c6-c577-403d-b6c3-ba5b9e1a7a45"
+                ]
             },
             "bcdd14f4-2405-4125-addf-5446dc1658f9": {
                 "size": {
@@ -222,31 +249,10 @@
                 },
                 "z": 0,
                 "embeds": [],
-                "isassociatedwith": [
-                    "a87e9281-9642-4527-a0d1-dfcc21b60e8b"
-                ],
                 "dependson": [
-                    "a87e9281-9642-4527-a0d1-dfcc21b60e8b",
-                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
+                    "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292",
+                    "a87e9281-9642-4527-a0d1-dfcc21b60e8b"
                 ]
-            },
-            "568b486e-cd42-478d-8fb9-1edbd4665229": {
-                "source": {
-                    "id": "bcdd14f4-2405-4125-addf-5446dc1658f9"
-                },
-                "target": {
-                    "id": "a87e9281-9642-4527-a0d1-dfcc21b60e8b"
-                },
-                "z": 11
-            },
-            "7b25299c-f763-4084-b50f-dc8912c7edc6": {
-                "source": {
-                    "id": "bcdd14f4-2405-4125-addf-5446dc1658f9"
-                },
-                "target": {
-                    "id": "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
-                },
-                "z": 12
             }
         }
     },
@@ -390,8 +396,9 @@
         "HostedzoneResource": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
+                "ParentId" : { "Fn::GetAtt": ["SetMyPublicIpRestApi", "RootResourceId"] },
                 "RestApiId": {
-                    "Ref": "SetMyPublicIpTwo"
+                    "Ref": "SetMyPublicIpRestApi"
                 },
                 "PathPart": "hostedzone"
             },
@@ -407,6 +414,9 @@
                 "ParentId": {
                     "Ref": "HostedzoneResource"
                 },
+                "RestApiId": {
+                    "Ref": "SetMyPublicIpRestApi"
+                },
                 "PathPart": "{hostedzoneid}"
             },
             "Metadata": {
@@ -421,6 +431,9 @@
                 "ParentId": {
                     "Ref": "HostedzoneResourceParameter"
                 },
+                "RestApiId": {
+                    "Ref": "SetMyPublicIpRestApi"
+                },
                 "PathPart": "domain"
             },
             "Metadata": {
@@ -434,6 +447,9 @@
             "Properties": {
                 "ParentId": {
                     "Ref": "DomainResource"
+                },
+                "RestApiId": {
+                    "Ref": "SetMyPublicIpRestApi"
                 },
                 "PathPart": "{domainname}"
             },
@@ -457,18 +473,16 @@
                     "method.request.path.domainname": true,
                     "method.request.header.x-forwarded-for": true
                 },
-                "RequestModels": [
+                "RequestModels":
                     {
                         "Ref": "SetMyPublicIpRequestModel"
-                    }
-                ],
+                    },
                 "MethodResponses": [
                     {
-                        "ResponseModels": [
+                        "ResponseModels":
                             {
                                 "Ref": "SetMyPublicIpResponseModel"
-                            }
-                        ],
+                            },
                         "StatusCode": "202"
                     }
                 ],
@@ -476,8 +490,20 @@
                     "ConnectionType": "INTERNET",
                     "Type": "AWS",
                     "IntegrationResponses": [
-                        {}
-                    ]
+                        {
+                            "StatusCode": "202",
+                            "ResponseParameters": {
+                                "changeRequestId": "$inputRoot.ChangeRequestId",
+                                "changeRequestStatus": "$inputRoot.ChangeRequestStatus",
+                                "publicIp": "$inputRoot.PublicIp"
+                            }
+                        }
+                    ],
+                    "RequestParameters": {
+                        "HostedZoneId": "$input.params('hostedzoneid')",
+                        "DomainName": "$input.params('domainname')",
+                        "PublicIps": "$input.params('X-Forwarded-For')"
+                    }
                 }
             },
             "Metadata": {
@@ -493,7 +519,7 @@
                 "Name": "SetMyPublicIpRequest",
                 "Description": "Request model for SetMyPublicIp Lambda",
                 "RestApiId": {
-                    "Ref": "SetMyPublicIpTwo"
+                    "Ref": "SetMyPublicIpRestApi"
                 },
                 "Schema": {
                     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -525,7 +551,7 @@
                 "Name": "SetMyPublicIpResponse",
                 "Description": "Response model for SetMyPublicIp Lambda",
                 "RestApiId": {
-                    "Ref": "SetMyPublicIpTwo"
+                    "Ref": "SetMyPublicIpRestApi"
                 },
                 "Schema": {
                     "$schema": "http://json-schema.org/draft-04/schema#",
