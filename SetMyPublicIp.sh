@@ -2,9 +2,11 @@
 
 _canonical_uri="%2Fapi%2Fhostedzone%2FZ6ZMEKJJ7H3SC%2Fdomain%2Fmarcelrienks.com"
 _region="eu-west-1"
-_date=date+"%Y%m%d"
+_service="apigateway"
+_request="aws4_request"
+_secret_key=""
+_secret=""
 
-#tested
 function create_canonical_request() {
   http_request_method="PATCH"
   canonical_uri=_canonical_uri
@@ -15,8 +17,7 @@ function create_canonical_request() {
 
   generated_hashed_request_payload=$(sha256_hash_in_hex "${request_payload}")
 
-  generated_canonical_request="${http_request_method}\n${canonical_uri}\n${canonical_query_string}\n${canonical_headers}\n${signed_headers}\n${generated_hashed_request_payload}"
-  printf "${generated_canonical_request}"
+  printf "${http_request_method}\n${canonical_uri}\n${canonical_query_string}\n${canonical_headers}\n${signed_headers}\n${generated_hashed_request_payload}"
 }
 
 function create_string_to_sign() {
@@ -24,25 +25,45 @@ function create_string_to_sign() {
 
   hash_algorithm="AWS4-HMAC-SHA256"
   time_stamp=$(iso_format_date)
-  scope="${_format_date}/${_region}/apigateway/aws4_request"
+  scope="${_format_date}/${_region}/${_service}/${_request}"
   supplied_hashed_canonical_request="$@"
 
-  generated_string_to_sign="${hash_algorithm}\n${time_stamp}\n${scope}\n${supplied_hashed_canonical_request}"
-  printf "${generated_string_to_sign}"
+  printf "${hash_algorithm}\n${time_stamp}\n${scope}\n${supplied_hashed_canonical_request}"
 }
 
-#tested
+function derive_signing_key() {
+  secret="${_secret}"
+  date=$(hmac "AWS4${secret}" "${_format_date}")
+  region=$(hmac "${date}", "${_region}")
+  service=$(hmac "${region}", "${_service}")
+  signing=$(hmac "${service}", "${_request}")
+
+  printf "${signing}"
+}
+
+function calculate_signature() {
+  signing="$1"
+  string="$2"
+  shift 2
+  printf "$string" | openssl dgst -binary -sha256 -mac HMAC -macopt "hexkey:$signing" | od -An -vtx1 | sed 's/[ \n]//g' | sed 'N;s/\n//'
+}
+
 function sha256_hash_in_hex() {
-  a="$@"
-  printf "$a" | openssl dgst -binary -sha256 | od -An -vtx1 | sed 's/[ \n]//g' | sed 'N;s/\n//'
+  input="$@"
+  printf "$input" | openssl dgst -binary -sha256 | od -An -vtx1 | sed 's/[ \n]//g' | sed 'N;s/\n//'
 }
 
-#tested
+function hmac() {
+  key="$1"
+  value="$2"
+  shift 2
+  printf "$value" | openssl dgst -binary -sha256 -hmac "$key" | od -An -vtx1 | sed 's/[ \n]//g' | sed 'N;s/\n//'
+}
+
 function iso_format_date() {
   printf $(date +"%Y%m%dT%H%M%SZ")
 }
 
-#tested
 function format_date() {
   printf $(date +"%Y%m%d")
 }
@@ -50,4 +71,10 @@ function format_date() {
 canonical_request=$(create_canonical_request)
 hashed_canonical_request=$(sha256_hash_in_hex "${canonical_request}")
 string_to_sign=$(create_string_to_sign "${hashed_canonical_request}")
-printf "$string_to_sign"
+signing_key=$(derive_signing_key)
+signature=$(calculate_signature "${signing_key}" "${string_to_sign}")
+date=$(format_date)
+
+authorization_header="AWS4-HMAC-SHA256 Credential=${_secret_key}/${date}/${_region}/apigateway/aws4_request, SignedHeaders=host;x-amz-date, Signature=${signature}"
+
+printf "$authorization_header\n"
