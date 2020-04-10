@@ -2,7 +2,7 @@
 
 _canonical_uri="%2Fapi%2Fhostedzone%2FZ6ZMEKJJ7H3SC%2Fdomain%2Fmarcelrienks.com"
 _region="eu-west-1"
-_service="apigateway"
+_service="execute-api"
 _request="aws4_request"
 _secret_key=""
 _secret=""
