@@ -75,6 +75,7 @@ signing_key=$(derive_signing_key)
 signature=$(calculate_signature "${signing_key}" "${string_to_sign}")
 date=$(format_date)
 
-authorization_header="AWS4-HMAC-SHA256 Credential=${_secret_key}/${date}/${_region}/apigateway/aws4_request, SignedHeaders=host;x-amz-date, Signature=${signature}"
+authorization_header="AWS4-HMAC-SHA256 Credential=${_secret_key}/${date}/${_region}/${_service}/aws4_request, SignedHeaders=host;x-amz-date, Signature=${signature}"
 
+#AWS4-HMAC-SHA256 Credential=AKIAVKIFKRIEU7TFMEEI/20200410/eu-west-1/execute-api/aws4_request, SignedHeaders=host;x-amz-date, Signature=4bca10e7885a56f056b44f63822bae1d963b66e99a4cc3acbcbee496b4b6fe47
 printf "$authorization_header\n"
