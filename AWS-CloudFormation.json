@@ -274,7 +274,7 @@
         "SetMyPublicIpLambda": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-                "FunctionName": "SetMyPublicIp2",
+                "FunctionName": "Pre-SetMyPublicIp",
                 "Description": "Function to set the IP address of a Route 53 domain to the public IP of the calling client",
                 "Handler": "not_required_for_custom_runtime",
                 "MemorySize": 128,
@@ -327,7 +327,7 @@
                         "Ref": "MySetMyPublicIpRoute53Policy"
                     }
                 ],
-                "RoleName": "My.SetMyPublicIp.Lambda.Role.2"
+                "RoleName": "Pre-My.SetMyPublicIp.Lambda.Role"
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -366,7 +366,7 @@
                     ]
                 },
                 "Description": "Permission to allow the Lambda SetMyPublicIp access to change a specific hosted zone's record set",
-                "ManagedPolicyName": "My.SetMyPublicIp.Route53.Policy.2"
+                "ManagedPolicyName": "Pre-My.SetMyPublicIp.Route53.Policy"
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -385,7 +385,7 @@
                     ]
                 },
                 "FailOnWarnings": true,
-                "Name": "SetMyPublicIpTwo"
+                "Name": "Pre-SetMyPublicIp"
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -396,7 +396,7 @@
         "HostedzoneResource": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
-                "ParentId" : { "Fn::GetAtt": ["SetMyPublicIpRestApi", "RootResourceId"] },
+                "ParentId": { "Fn::GetAtt": [ "SetMyPublicIpRestApi", "RootResourceId" ] },
                 "RestApiId": {
                     "Ref": "SetMyPublicIpRestApi"
                 },
@@ -473,16 +473,14 @@
                     "method.request.path.domainname": true,
                     "method.request.header.x-forwarded-for": true
                 },
-                "RequestModels":
-                    {
-                        "Ref": "SetMyPublicIpRequestModel"
-                    },
+                "RequestModels": {
+                    "Ref": "SetMyPublicIpRequestModel"
+                },
                 "MethodResponses": [
                     {
-                        "ResponseModels":
-                            {
-                                "Ref": "SetMyPublicIpResponseModel"
-                            },
+                        "ResponseModels": {
+                            "Ref": "SetMyPublicIpResponseModel"
+                        },
                         "StatusCode": "202"
                     }
                 ],
@@ -516,7 +514,7 @@
             "Type": "AWS::ApiGateway::Model",
             "Properties": {
                 "ContentType": "application/json",
-                "Name": "SetMyPublicIpRequest",
+                "Name": "Pre-SetMyPublicIpRequest",
                 "Description": "Request model for SetMyPublicIp Lambda",
                 "RestApiId": {
                     "Ref": "SetMyPublicIpRestApi"
@@ -548,7 +546,7 @@
             "Type": "AWS::ApiGateway::Model",
             "Properties": {
                 "ContentType": "application/json",
-                "Name": "SetMyPublicIpResponse",
+                "Name": "Pre-SetMyPublicIpResponse",
                 "Description": "Response model for SetMyPublicIp Lambda",
                 "RestApiId": {
                     "Ref": "SetMyPublicIpRestApi"

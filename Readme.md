@@ -13,9 +13,10 @@ However the purpose of this project was to learn how to use AWS Lambda to solve 
 ## WIP (Work In Progress)
 This is still a work in progress
 ### Todo:
-* Create setup app/script, that will create all user, roles, and configure API Gateway
-* Create script to recursively call SetMyPublicIp api function
-* Complete readme
+* Complete Cloud Formation script 'AWS-CloudFormation.json'
+  * Remove prefix 'Pre-' from the names of resources once the script is working
+* Complete bash script 'SetMyPublicIp.sh'
+* Complete readme file 'README.md'
 
 ## Usage
 Complete this
