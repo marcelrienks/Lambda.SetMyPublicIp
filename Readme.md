@@ -28,9 +28,17 @@ Complete this
 * Create Method
 * Configure the params on the 'Method Request' including X-Forwarded-For
 * Only create a Mapping Template on 'Integration Request'
-### AWS Lambda setup
-dotnet tool install -g Amazon.Lambda.Tools
-dotnet tool update -g Amazon.Lambda.Tools
-dotnet lambda package (from the 'Lambda.SetMyPublicIp' project folder)
+### AWS Lambda tools
+#### Setup
+1. `dotnet tool install -g Amazon.Lambda.Tools`  
+2. `dotnet tool update -g Amazon.Lambda.Tools`  
+#### Package
+Package the project into a zip file that can be used to manually opload to an S3 bucket.  
+This method can them be used along with a Cloud Formation script, for deploying a full stack.
+3. from the 'Lambda.SetMyPublicIp' project folder  
+`dotnet lambda package`
+### Cloud Formation script
+There is a Cloud Formation script at the solution layer called `AWS-CloudFormation.json`.  
+This script can be used, along with the packaged source created by using AWS Lambda tools from above, for deploying a full stack.
 ### Script Example:
 Complete this

@@ -267,6 +267,7 @@
         },
         "S3ZipKey": {
             "Type": "String",
+            "Default": "Lambda.SetMyPublicIp.zip",
             "Description": "The key of the packaged Lambda that has been uploaded to S3"
         }
     },
@@ -274,7 +275,7 @@
         "SetMyPublicIpLambda": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-                "FunctionName": "Pre-SetMyPublicIp",
+                "FunctionName": "SetMyPublicIp",
                 "Description": "Function to set the IP address of a Route 53 domain to the public IP of the calling client",
                 "Handler": "not_required_for_custom_runtime",
                 "MemorySize": 128,
@@ -327,7 +328,7 @@
                         "Ref": "MySetMyPublicIpRoute53Policy"
                     }
                 ],
-                "RoleName": "Pre-My.SetMyPublicIp.Lambda.Role"
+                "RoleName": "My.SetMyPublicIp.Lambda.Role"
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -366,7 +367,7 @@
                     ]
                 },
                 "Description": "Permission to allow the Lambda SetMyPublicIp access to change a specific hosted zone's record set",
-                "ManagedPolicyName": "Pre-My.SetMyPublicIp.Route53.Policy"
+                "ManagedPolicyName": "My.SetMyPublicIp.Route53.Policy"
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -385,7 +386,7 @@
                     ]
                 },
                 "FailOnWarnings": true,
-                "Name": "Pre-SetMyPublicIp"
+                "Name": "SetMyPublicIp"
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -466,6 +467,9 @@
                     "Ref": "DomainResourceParameter"
                 },
                 "AuthorizationType": "AWS_IAM",
+                "RestApiId": {
+                    "Ref": "SetMyPublicIpRestApi"
+                },
                 "HttpMethod": "PATCH",
                 "OperationName": "Set my public IP",
                 "RequestParameters": {
@@ -474,12 +478,16 @@
                     "method.request.header.x-forwarded-for": true
                 },
                 "RequestModels": {
-                    "Ref": "SetMyPublicIpRequestModel"
+                    "application/json": {
+                        "Ref": "SetMyPublicIpRequestModel"
+                    }
                 },
                 "MethodResponses": [
                     {
                         "ResponseModels": {
-                            "Ref": "SetMyPublicIpResponseModel"
+                            "application/json": {
+                                "Ref": "SetMyPublicIpResponseModel"
+                            }
                         },
                         "StatusCode": "202"
                     }
@@ -487,6 +495,19 @@
                 "Integration": {
                     "ConnectionType": "INTERNET",
                     "Type": "AWS",
+                    "IntegrationHttpMethod": "POST",
+                    "Uri": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "arn:aws:apigateway:",
+                                { "Ref": "AWS::Region" },
+                                ":lambda:path/2015-03-31/functions/",
+                                { "Fn::GetAtt": [ "SetMyPublicIpLambda", "Arn" ] },
+                                "/invocations"
+                            ]
+                        ]
+                    },
                     "IntegrationResponses": [
                         {
                             "StatusCode": "202",
@@ -514,7 +535,7 @@
             "Type": "AWS::ApiGateway::Model",
             "Properties": {
                 "ContentType": "application/json",
-                "Name": "Pre-SetMyPublicIpRequest",
+                "Name": "SetMyPublicIpRequest",
                 "Description": "Request model for SetMyPublicIp Lambda",
                 "RestApiId": {
                     "Ref": "SetMyPublicIpRestApi"
@@ -546,7 +567,7 @@
             "Type": "AWS::ApiGateway::Model",
             "Properties": {
                 "ContentType": "application/json",
-                "Name": "Pre-SetMyPublicIpResponse",
+                "Name": "SetMyPublicIpResponse",
                 "Description": "Response model for SetMyPublicIp Lambda",
                 "RestApiId": {
                     "Ref": "SetMyPublicIpRestApi"
