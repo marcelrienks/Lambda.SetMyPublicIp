@@ -283,7 +283,7 @@
                 "Runtime": "provided",
                 "Role": {
                     "Fn::GetAtt": [
-                        "MySetMyPublicIpLambdaRole",
+                        "MySetMyPublicIpLambdaRoute53Role",
                         "Arn"
                     ]
                 },
@@ -303,10 +303,10 @@
                 }
             },
             "DependsOn": [
-                "MySetMyPublicIpLambdaRole"
+                "MySetMyPublicIpLambdaRoute53Role"
             ]
         },
-        "MySetMyPublicIpLambdaRole": {
+        "MySetMyPublicIpLambdaRoute53Role": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "AssumeRolePolicyDocument": {
@@ -324,9 +324,35 @@
                 "Description": "Allows the Lambda SetMyPublicIp to access other AWS services",
                 "ManagedPolicyArns": [
                     "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
-                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                ],
+                "Policies" : [ 
                     {
-                        "Ref": "MySetMyPublicIpRoute53Policy"
+                        "PolicyDocument" : {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "route53:ChangeResourceRecordSets"
+                                    ],
+                                    "Resource": [
+                                        "arn:aws:route53:::change/*",
+                                        {
+                                            "Fn::Sub": [
+                                                "arn:aws:route53:::hostedzone/${HostedZoneIdValue}",
+                                                {
+                                                    "HostedZoneIdValue": {
+                                                        "Ref": "HostedZoneId"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "PolicyName" : "My.SetMyPublicIp.Route53.Policy"
                     }
                 ],
                 "RoleName": "My.SetMyPublicIp.Lambda.Role"
@@ -334,45 +360,6 @@
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "d359d69b-cbe4-4ad6-be39-308eeac3d136"
-                }
-            },
-            "DependsOn": [
-                "MySetMyPublicIpRoute53Policy"
-            ]
-        },
-        "MySetMyPublicIpRoute53Policy": {
-            "Type": "AWS::IAM::ManagedPolicy",
-            "Properties": {
-                "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "route53:ChangeResourceRecordSets"
-                            ],
-                            "Resource": [
-                                "arn:aws:route53:::change/*",
-                                {
-                                    "Fn::Sub": [
-                                        "arn:aws:route53:::hostedzone/${HostedZoneIdValue}",
-                                        {
-                                            "HostedZoneIdValue": {
-                                                "Ref": "HostedZoneId"
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "Description": "Permission to allow the Lambda SetMyPublicIp access to change a specific hosted zone's record set",
-                "ManagedPolicyName": "My.SetMyPublicIp.Route53.Policy"
-            },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "aaace790-31a8-4987-b8a0-4f389a468570"
                 }
             }
         },
@@ -393,7 +380,48 @@
                 "AWS::CloudFormation::Designer": {
                     "id": "2af110c6-c577-403d-b6c3-ba5b9e1a7a45"
                 }
-            }
+            },
+            "DependsOn": [
+                "SetMyPublicIpLambda"
+            ]
+        },
+        "MySetMyPublicIpRestApiUser": {
+            "Type" : "AWS::IAM::User",
+            "Properties" : {
+                "Policies" : [
+                    {
+                        "PolicyName" : "My.SetMyPublicIp.RestApi.Policy",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "execute-api:Invoke"
+                                    ],
+                                    "Resource": {
+                                        "Fn::Join": [
+                                            "",
+                                            [
+                                                "arn:aws:execute-api:",
+                                                { "Ref": "AWS::Region" },
+                                                ":",
+                                                { "Ref": "AWS::AccountId" },
+                                                ":",
+                                                { "Ref": "SetMyPublicIpRestApi" },
+                                                "/api/PATCH/hostedzone/*/domain/*"
+                                            ]
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "DependsOn": [
+                "SetMyPublicIpRestApi"
+            ]
         },
         "HostedzoneResource": {
             "Type": "AWS::ApiGateway::Resource",
@@ -408,7 +436,10 @@
                 "AWS::CloudFormation::Designer": {
                     "id": "cb3361e1-cf59-4c5b-aa51-f2e0a93c3292"
                 }
-            }
+            },
+            "DependsOn": [
+                "SetMyPublicIpRestApi"
+            ]
         },
         "HostedzoneResourceParameter": {
             "Type": "AWS::ApiGateway::Resource",
@@ -425,7 +456,11 @@
                 "AWS::CloudFormation::Designer": {
                     "id": "b8f786fc-647d-4128-9466-a09bf1da447c"
                 }
-            }
+            },
+            "DependsOn": [
+                "SetMyPublicIpRestApi",
+                "HostedzoneResource"
+            ]
         },
         "DomainResource": {
             "Type": "AWS::ApiGateway::Resource",
@@ -442,7 +477,11 @@
                 "AWS::CloudFormation::Designer": {
                     "id": "a4548f89-41fb-4d94-990c-0f9a4e6e267d"
                 }
-            }
+            },
+            "DependsOn": [
+                "SetMyPublicIpRestApi",
+                "HostedzoneResourceParameter"
+            ]
         },
         "DomainResourceParameter": {
             "Type": "AWS::ApiGateway::Resource",
@@ -459,7 +498,11 @@
                 "AWS::CloudFormation::Designer": {
                     "id": "5b70e59c-1b2b-4130-8189-0a5de5e78d52"
                 }
-            }
+            },
+            "DependsOn": [
+                "SetMyPublicIpRestApi",
+                "DomainResource",
+            ]
         },
         "SetMyPublicIpPatchMethod": {
             "Type": "AWS::ApiGateway::Method",
@@ -526,7 +569,12 @@
                 "AWS::CloudFormation::Designer": {
                     "id": "2317c5f0-a7cd-4b40-9cd2-1e5723a4e573"
                 }
-            }
+            },
+            "DependsOn": [
+                "DomainResourceParameter",
+                "SetMyPublicIpRequestModel",
+                "SetMyPublicIpResponseModel"
+            ]
         },
         "SetMyPublicIpRequestModel": {
             "Type": "AWS::ApiGateway::Model",
@@ -592,35 +640,17 @@
                 }
             }
         },
-        "SetMyPublicIpLambdaPermission": {
-            "Type": "AWS::Lambda::Permission",
+        "Deployment": {
+            "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
-                "Action": "lambda:InvokeFunction",
-                "FunctionName": { "Fn::GetAtt": [ "SetMyPublicIpLambda", "Arn" ] },
-                "Principal": "apigateway.amazonaws.com",
-                "SourceArn": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "arn:aws:execute-api:",
-                            { "Ref": "AWS::Region" },
-                            ":",
-                            { "Ref": "AWS::AccountId" },
-                            ":",
-                            { "Ref": "SetMyPublicIpRestApi" },
-                            "/*"
-                        ]
-                    ]
-                }
-            },
-            "Metadata": {
-                "AWS::CloudFormation::Designer": {
-                    "id": "bcdd14f4-2405-4125-addf-5446dc1658f9"
-                }
+                "RestApiId": {
+                    "Ref": "SetMyPublicIpRestApi"
+                },
+                "Description": "Initial api deploy",
+                "StageName": "api"
             },
             "DependsOn": [
-                "SetMyPublicIpLambda",
-                "SetMyPublicIpRestApi"
+                "SetMyPublicIpPatchMethod"
             ]
         }
     }

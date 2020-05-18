@@ -1,5 +1,3 @@
-[![Build Status](https://dev.azure.com/marcelrienks/SetMyPublicIp/_apis/build/status/marcelrienks.Lambda.SetMyPublicIp?branchName=master)](https://dev.azure.com/marcelrienks/SetMyPublicIp/_build/latest?definitionId=15&branchName=master)
-
 [![Build Status](https://github.com/marcelrienks/Lambda.SetMyPublicIp/workflows/dotnet-core/badge.svg)](https://github.com/marcelrienks/Lambda.SetMyPublicIp/actions?query=workflow%3Adotnet-core)
 
 # SetMyPublicIp
@@ -18,20 +16,19 @@ This is still a work in progress
 * Complete bash script 'SetMyPublicIp.sh'
 * Complete readme file 'README.md'
 
-## Usage
-Complete this
-### Route 53 Domain configuration
-Complete this
-### API Gateway configuration
-Complete this
-* Create Resources
-* Create Method
-* Configure the params on the 'Method Request' including X-Forwarded-For
-* Only create a Mapping Template on 'Integration Request'
+## Deploy
+Complete this...
+1. Ensure that you have a hosted zone on a domain set up in Route 53 of AWS
+2. Use 'Lambda tools' to package the project into a zip file
+3. Upload the zip to an S3 bucket in the same region that you intend to deploy the Cloud Formation Stack to
+4. Using the 'AWS-CloudFormation.json' to create and deploy a CloudFormation stack  
+4.1. Reference the Hosted Zone from point 1 above, that you would like to set the public ip recordset for  
+4.2. Reference the zip file name that was uploaded to S3  
+4.3. Reference the name of the S3 bucket that the zip file was uploaded to
 ### AWS Lambda tools
 #### Setup
-1. `dotnet tool install -g Amazon.Lambda.Tools`  
-2. `dotnet tool update -g Amazon.Lambda.Tools`  
+1. `dotnet tool install -g Amazon.Lambda.Tools`
+2. `dotnet tool update -g Amazon.Lambda.Tools`
 #### Package
 Package the project into a zip file that can be used to manually opload to an S3 bucket.  
 This method can them be used along with a Cloud Formation script, for deploying a full stack.
