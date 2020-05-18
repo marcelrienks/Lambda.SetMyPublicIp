@@ -512,17 +512,13 @@
                     "IntegrationResponses": [
                         {
                             "StatusCode": "202",
-                            "ResponseParameters": {
-                                "changeRequestId": "$inputRoot.ChangeRequestId",
-                                "changeRequestStatus": "$inputRoot.ChangeRequestStatus",
-                                "publicIp": "$inputRoot.PublicIp"
+                            "ResponseTemplates": {
+                                "application/json": "#set($inputRoot = $input.path('$')){\"changeRequestId\" : \"$inputRoot.ChangeRequestId\",\"changeRequestStatus\" : \"$inputRoot.ChangeRequestStatus\",\"publicIp\" : \"$inputRoot.PublicIp\"}"
                             }
                         }
                     ],
-                    "RequestParameters": {
-                        "HostedZoneId": "$input.params('hostedzoneid')",
-                        "DomainName": "$input.params('domainname')",
-                        "PublicIps": "$input.params('X-Forwarded-For')"
+                    "RequestTemplates": {
+                        "application/json": "#set($inputRoot = $input.path('$')){\"HostedZoneId\": \"$input.params('hostedzoneid')\",\"DomainName\": \"$input.params('domainname')\",\"PublicIps\": \"$input.params('X-Forwarded-For')\"}"
                     }
                 }
             },
