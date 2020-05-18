@@ -326,9 +326,9 @@
                     "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
                     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
                 ],
-                "Policies" : [ 
+                "Policies": [
                     {
-                        "PolicyDocument" : {
+                        "PolicyDocument": {
                             "Version": "2012-10-17",
                             "Statement": [
                                 {
@@ -337,7 +337,6 @@
                                         "route53:ChangeResourceRecordSets"
                                     ],
                                     "Resource": [
-                                        "arn:aws:route53:::change/*",
                                         {
                                             "Fn::Sub": [
                                                 "arn:aws:route53:::hostedzone/${HostedZoneIdValue}",
@@ -352,7 +351,7 @@
                                 }
                             ]
                         },
-                        "PolicyName" : "My.SetMyPublicIp.Route53.Policy"
+                        "PolicyName": "My.SetMyPublicIp.Route53.Policy"
                     }
                 ],
                 "RoleName": "My.SetMyPublicIp.Lambda.Role"
@@ -386,11 +385,12 @@
             ]
         },
         "MySetMyPublicIpRestApiUser": {
-            "Type" : "AWS::IAM::User",
-            "Properties" : {
-                "Policies" : [
+            "Type": "AWS::IAM::User",
+            "Properties": {
+                "UserName" : "My.SetMyPublicIp.RestApi",
+                "Policies": [
                     {
-                        "PolicyName" : "My.SetMyPublicIp.RestApi.Policy",
+                        "PolicyName": "My.SetMyPublicIp.RestApi.Policy",
                         "PolicyDocument": {
                             "Version": "2012-10-17",
                             "Statement": [
@@ -404,11 +404,17 @@
                                             "",
                                             [
                                                 "arn:aws:execute-api:",
-                                                { "Ref": "AWS::Region" },
+                                                {
+                                                    "Ref": "AWS::Region"
+                                                },
                                                 ":",
-                                                { "Ref": "AWS::AccountId" },
+                                                {
+                                                    "Ref": "AWS::AccountId"
+                                                },
                                                 ":",
-                                                { "Ref": "SetMyPublicIpRestApi" },
+                                                {
+                                                    "Ref": "SetMyPublicIpRestApi"
+                                                },
                                                 "/api/PATCH/hostedzone/*/domain/*"
                                             ]
                                         ]
@@ -426,7 +432,12 @@
         "HostedzoneResource": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
-                "ParentId": { "Fn::GetAtt": [ "SetMyPublicIpRestApi", "RootResourceId" ] },
+                "ParentId": {
+                    "Fn::GetAtt": [
+                        "SetMyPublicIpRestApi",
+                        "RootResourceId"
+                    ]
+                },
                 "RestApiId": {
                     "Ref": "SetMyPublicIpRestApi"
                 },
@@ -545,9 +556,16 @@
                             "",
                             [
                                 "arn:aws:apigateway:",
-                                { "Ref": "AWS::Region" },
+                                {
+                                    "Ref": "AWS::Region"
+                                },
                                 ":lambda:path/2015-03-31/functions/",
-                                { "Fn::GetAtt": [ "SetMyPublicIpLambda", "Arn" ] },
+                                {
+                                    "Fn::GetAtt": [
+                                        "SetMyPublicIpLambda",
+                                        "Arn"
+                                    ]
+                                },
                                 "/invocations"
                             ]
                         ]
