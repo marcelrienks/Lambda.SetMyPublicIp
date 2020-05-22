@@ -1,5 +1,4 @@
-[![Build Status](https://github.com/marcelrienks/Lambda.SetMyPublicIp/workflows/dotnet-core/badge.svg)](https://github.com/marcelrienks/Lambda.SetMyPublicIp/actions?query=workflow%3Adotnet-core)
-
+![Build & Test](https://github.com/marcelrienks/Lambda.SetMyPublicIp/workflows/Build%20&%20Test/badge.svg)
 # SetMyPublicIp
 This is a DDNS (Dynamic DNS) solution implemented using AWS Route 53 and AWS Lambda.
 
