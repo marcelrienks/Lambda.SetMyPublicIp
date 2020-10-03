@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#helpful links:
+#https://docs.aws.amazon.com/general/latest/gr/sigv4-create-canonical-request.html
+
 _uri="https://jnhisz7ebh.execute-api.eu-west-1.amazonaws.com/api/hostedzone/Z6ZMEKJJ7H3SC/domain/marcelrienks.com"
 _canonical_uri="%2Fapi%2Fhostedzone%2FZ6ZMEKJJ7H3SC%2Fdomain%2Fmarcelrienks.com"
 _region="eu-west-1"
